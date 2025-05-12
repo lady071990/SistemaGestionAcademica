@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/principal.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/layout/components/estudiante/form-estudiante.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/logica/clases/InstitucionEducativa.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/logica/clases/NotaConsulta.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/layout/components/estudiante/lista-estudiante.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/logica/clases/Usuario.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/layout/boletin.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/layout/components/estudiante/form-estudiante-action.php</file>
+            <file>file:/C:/xampp/htdocs/SistemaGestionAcademica/logica/clasesGenericas/ConectorBD.php</file>
+        </group>
+    </open-files>
+</project-private>
