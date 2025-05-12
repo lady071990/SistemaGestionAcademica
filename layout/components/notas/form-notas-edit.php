@@ -90,7 +90,7 @@ foreach ($arrayTipoActividad as $paramTA) {
 
                 <div class="as-form-input">
                     <label class="hide-label" for="nota">Calificación</label>
-                    <input type="number" name="nota" id="nota" value="<?= $arrayNotas->getNota() ?>" required placeholder="Calificación">
+                    <input type="number" name="nota" id="nota" value="<?= $arrayNotas->getNota() ?>" step="0.1" min="0" max="5" required placeholder="Calificación">
                 </div>
             </div>
             <div class="as-form-button">
