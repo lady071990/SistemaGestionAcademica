@@ -15,11 +15,14 @@ if (isset($_REQUEST['identificacion']) || isset($_REQUEST['nombres']) || isset($
 }
 
 foreach ($listaUsuarios as $item) {
-    $foto = !empty($item->getFoto()) ? "documentos/fotos/{$item->getFoto()}" : "documentos/fotos/foto1.jpeg";
-    if (!file_exists($foto)) {
+    $nombreFoto = $item->getId().'_'.$item->getIdentificacion();
+    $extension = pathinfo($item->getFoto(), PATHINFO_EXTENSION);
+    $foto = !empty($item->getFoto()) ? "documentos/fotos/{$nombreFoto}.{$extension}" : "documentos/fotos/foto1.jpeg";
+    
+    // Verificar si el archivo existe realmente
+    if (!file_exists($foto) || $item->getFoto() == null) {
         $foto = "documentos/fotos/foto1.jpeg";
     }
-
     $lista .= "<tr>";
     $lista .= '<th scope="row">' . $count . '</th>';
     $lista .= "<td>{$item->getIdentificacion()}</td>";

@@ -115,7 +115,7 @@ class Usuario
         else $filtro = " WHERE $filtro";
         if ($orden == null || $orden == '') $orden = '';
         else $orden = " ORDER BY $orden";
-        $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado FROM usuario $filtro $orden";
+        $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto FROM usuario $filtro $orden";
         return ConectorBD::ejecutarQuery($cadenaSQL);
     }
     

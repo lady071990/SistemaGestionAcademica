@@ -114,29 +114,7 @@ require_once '../logica/clasesGenericas/LibreriasImprimir.php';
     $contar = 0;
     $cantidadNotas = 0;
     $listaNotas = array();
-    $imagen='';
-    if (isset($_FILES["foto"])){
-        $file = $_FILES["foto"];
-        $nombre = $_FILES["name"];
-        $tipo = $_FILES["type"];
-        $ruta_provisional = $file["tpm_name"];
-        $size = $file["size"];
-        $dimensiones = getimagesize($ruta_provisional);
-        $width = $dimensiones[0];
-        $height = $dimensiones[1];
-        $carpeta = "layout/components/estudiante/fotos/";
-        if ($tipo != 'image/jpg' && $tipo != 'image/JPG' && $tipo != 'image/jpeg' && $tipo != 'image/png' && $tipo != 'image/gif'){
-            echo "Error, el archivo no es una imagen";
-        }
-        else if ($size > 3*1024*1024){
-            echo "Error, el tamaño maximo permitido es 3MB";
-        }
-        else{
-            $src = $carpeta.$nombre;
-            move_uploaded_file($ruta_provisional, $src);
-            $imagen="layout/components/estudiante/fotos/ .$nombre";
-        }
-    }
+    
     if (isset($_REQUEST['identificacion'])) {
     $listaNotas = NotasConsulta::getListaEnObjetos("WHERE u.identificacion = {$_REQUEST['identificacion']} GROUP BY n.id_periodo_academico, u.identificacion", false);
         
@@ -155,6 +133,7 @@ require_once '../logica/clasesGenericas/LibreriasImprimir.php';
                         <p><strong>Grado:</strong> ' . htmlspecialchars($key->getNombreGrado() . ' ' . $key->getNombreGrupo()) . '</p>
                         <p><strong>Periodo Académico:</strong> ' . htmlspecialchars($key->getPeriodoAcademico()) . '</p>
                     </div>
+                    <img class="student-photo" src="documentos/fotos/' . htmlspecialchars($key->getFoto()) . '" alt="Foto del estudiante">
                 </div>';
 
             $lista .= '<table class="info-table">

@@ -83,10 +83,38 @@ if (isset($_REQUEST['id'])) {
                     <input name="documentos" type="file" id="documentos" value="<?= $array->getDocumentos()  ?>" type="file" class="form-control" required="required" data-error="Firstname is required.">
                 </div>
                 
-                <div class="as-form-input"> 
-                    <label for="form_name">Foto</label>
-                    <input type="file" name="foto" id="foto" value="<?= $array->getFoto() ?>" onchange="mostrarFoto();" class="form-control" required="required" data-error="Firstname is required.">
+                <div class="as-form-input">
+                    <label for="foto">Foto del estudiante</label>
+
+                    <!-- Imagen con ID para modificarla desde JavaScript -->
+                    <?php
+                    $nombreFoto = $array->getId() . '_' . $array->getIdentificacion();
+                    $extension = pathinfo($array->getFoto(), PATHINFO_EXTENSION);
+                    $fotoUrl = "documentos/fotos/{$nombreFoto}.{$extension}";
+                    $defaultFoto = "documentos/fotos/foto1.jpeg";
+
+                    // Si tiene foto, usamos la URL; si no, usamos la por defecto
+                    $src = ($array->getFoto()) ? $fotoUrl : $defaultFoto;
+                    ?>
+                    <img id="preview" src="<?= $src ?>" width="70" height="90" style="margin-bottom:10px" onerror="this.src='<?= $defaultFoto ?>'">
+
+                    <input type="file" name="foto" id="foto" accept="image/*">
                 </div>
+
+                <!-- Script para mostrar vista previa -->
+                <script>
+                document.getElementById('foto').addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('preview').src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                });
+                </script>
+
 
                 <?php
                 if ($titulo == 'Modificar') {
