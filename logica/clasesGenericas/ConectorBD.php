@@ -71,4 +71,12 @@ class ConectorBD
         }
         return false;
     }
+    
+    public static function getConexion() {
+    $conector = new ConectorBD();
+    if ($conector->conectar()) {
+        return $conector->conexion;
+    }
+    return null;
+}
 }

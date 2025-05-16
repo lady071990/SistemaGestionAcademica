@@ -20,3 +20,4 @@ require_once '../logica/clases/TipoActividad.php';
 require_once '../logica/clases/Nota.php';
 require_once '../logica/clases/NotaConsulta.php';
 require_once '../logica/clases/GrupoEstudiante.php';
+require_once '../logica/clases/Rotaciones.php';

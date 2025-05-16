@@ -1,6 +1,6 @@
 <?php
 
-class Especialidad {
+class Especialidades {
     protected $id;
     protected $nombre;
     protected $orden;
@@ -10,7 +10,7 @@ class Especialidad {
     {
         if ($campo != null) {
             if (!is_array($campo)) {
-                $cadenaSQL = "SELECT id, nombre, orden, duracionDias FROM usuario WHERE $campo='$valor'";
+                $cadenaSQL = "SELECT id, nombre, orden, duracion_dias FROM especialidades WHERE $campo='$valor'";
                 $campo = ConectorBD::ejecutarQuery($cadenaSQL)[0];
             }
     
@@ -39,8 +39,9 @@ class Especialidad {
 
     public function guardar()
     {
-        $cadenaSQL = "INSERT INTO especialidades (nombre, orden, duracionDias) values ('$this->nombre','$this->orden', '$this->duracionDias')";
-        ConectorBD::ejecutarQuery($cadenaSQL);
+    $cadenaSQL = "INSERT INTO especialidades (nombre, orden, duracion_dias) VALUES (?, ?, ?)";
+    $parametros = [$this->nombre, $this->orden, $this->duracionDias];
+    return ConectorBD::ejecutarQuery($cadenaSQL, $parametros);
     }
 
     public function modificar($ID)
@@ -51,7 +52,7 @@ class Especialidad {
 
     public function eliminar()
     {
-        $cadenaSQL = "DELETE FROM roles WHERE id='{$this->id}'";
+        $cadenaSQL = "DELETE FROM especialidades WHERE id='{$this->id}'";
         ConectorBD::ejecutarQuery($cadenaSQL);
     }
 
@@ -67,10 +68,10 @@ class Especialidad {
 
     public static function getListaEnObjetos($filtro, $orden)
     {
-        $resultado = Especialidad::getLista($filtro, $orden);
+        $resultado = Especialidades::getLista($filtro, $orden);
         $lista = array();
         foreach ($resultado as $key) {
-            $rol = new Especialidad($key, null);
+            $rol = new Especialidades($key, null);
             array_push($lista, $rol);
         }
         return $lista;

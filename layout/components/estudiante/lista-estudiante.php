@@ -41,6 +41,10 @@ foreach ($listaUsuarios as $item) {
         $lista .= "<a class='as-edit' href='principal.php?CONTENIDO=layout/components/estudiante/form-estudiante.php&accion=Modificar&id={$item->getId()}'>" . Generalidades::getTooltip(1, '') . "</a>";
         $lista .= "<span class='as-trash' onClick='eliminar({$item->getId()})'>" . Generalidades::getTooltip(2, '') . "</span>";
         $lista .= $item->getEstado() == 1 ? "<a class='as-add' href='principal.php?CONTENIDO=layout/components/estudiante/form-estudiante-grupo-create.php&accion=crear&id={$item->getId()}'>" . Generalidades::getTooltip(3, 'Agregar a grupo') . "</a>" : "";
+        if ($item->getEstado() == 1) {
+        $lista .= "<a class='as-rotation' href='principal.php?CONTENIDO=layout/components/rotaciones/gestionar-rotacion.php&estudiante_id={$item->getId()}' title='Gestionar rotaciones'>
+                     <i class='fas fa-sync-alt'></i></a>";
+        }
         $lista .= "</td>";
     }
     $lista .= "</tr>";
