@@ -15,13 +15,14 @@ class NotasConsulta
     protected $iden_estudiante;
     protected $institucion_educativa_id;
     protected $foto;
+    protected $programa_academico;
 
     public function __construct($campo, $suma)
     {
         if ($campo != null) {
             if (!is_array($campo)) {
                 $cadenaSQL = "SELECT  n.id, n.id_usuario_estudiante, n.id_periodo_academico, n.id_asignatura, n.id_tipo_actividad, n.nota, n.fecha_creacion, n.fecha_modificacion,
-                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto,
+                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto, u.programa_academico,
                             pa.inicio_periodo, pa.finalizacion_periodo, pa.nombre as nombre_periodo, pa.id_anio_escolar,
                             a.nombre_asignatura,
                             ta.nombre_actividad,
@@ -38,7 +39,7 @@ class NotasConsulta
                             JOIN institucion_educativa ie ON u.institucion_educativa_id = ie.id $campo";
 
                 $cadenaSQLSuma = "SELECT n.id, n.id_usuario_estudiante, n.id_periodo_academico, n.id_asignatura, n.id_tipo_actividad, SUM(n.nota) as nota, n.fecha_creacion, n.fecha_modificacion,
-                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto,
+                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto, u.programa_academico,
                             pa.inicio_periodo, pa.finalizacion_periodo, pa.nombre as nombre_periodo, pa.id_anio_escolar,
                             a.nombre_asignatura,
                             ta.nombre_actividad,
@@ -74,6 +75,7 @@ class NotasConsulta
             $this->iden_estudiante = $campo['iden_estudiante'];
             $this->institucion_educativa_id = $campo['institucion_educativa_id'] ?? null;
             $this->foto = $campo['foto'] ?? null;
+            $this->programa_academico = $campo['programa_academico'] ?? null;
         }
     }
 
@@ -93,14 +95,17 @@ class NotasConsulta
     // Nuevos métodos getters
     public function getInstitucionEducativaId() { return $this->institucion_educativa_id; }
     public function getFoto() { return $this->foto; }
+    public function getProgramaAcademico() { return $this->programa_academico; }
 
-    // Métodos setters para los nuevos campos
+    // Setters
     public function setInstitucionEducativaId($institucion_educativa_id) { 
         $this->institucion_educativa_id = $institucion_educativa_id; 
     }
-    
     public function setFoto($foto) { 
         $this->foto = $foto; 
+    }
+    public function setProgramaAcademico($programa_academico) {
+        $this->programa_academico = $programa_academico;
     }
 
     // Métodos existentes para obtener objetos relacionados
@@ -120,7 +125,6 @@ class NotasConsulta
         return new Asignatura('id', $this->id_asignatura);
     }
 
-    // Método para obtener el nombre de la institución educativa
     public function getNombreInstitucion() {
         if ($this->institucion_educativa_id) {
             $query = "SELECT nombre FROM institucion_educativa WHERE id='{$this->institucion_educativa_id}'";
@@ -138,7 +142,7 @@ class NotasConsulta
 
     public static function getLista($filtro, $suma) {
         $cadenaSQL = "SELECT n.id, n.id_usuario_estudiante, n.id_periodo_academico, n.id_asignatura, n.id_tipo_actividad, n.nota, n.fecha_creacion, n.fecha_modificacion,
-                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto,
+                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto, u.programa_academico,
                             pa.inicio_periodo, pa.finalizacion_periodo, pa.nombre as nombre_periodo, pa.id_anio_escolar,
                             a.nombre_asignatura,
                             ta.nombre_actividad,
@@ -155,7 +159,7 @@ class NotasConsulta
                             JOIN institucion_educativa ie ON u.institucion_educativa_id = ie.id $filtro";
 
         $cadenaSQLSuma = "SELECT n.id, n.id_usuario_estudiante, n.id_periodo_academico, n.id_asignatura, n.id_tipo_actividad, SUM(n.nota) as nota, n.fecha_creacion, n.fecha_modificacion,
-                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto,
+                            u.identificacion as iden_estudiante, u.nombres, u.apellidos, u.estado, u.foto, u.programa_academico,
                             pa.inicio_periodo, pa.finalizacion_periodo, pa.nombre as nombre_periodo, pa.id_anio_escolar,
                             a.nombre_asignatura,
                             ta.nombre_actividad,
@@ -177,7 +181,7 @@ class NotasConsulta
             return ConectorBD::ejecutarQuery($cadenaSQL);
         }
     }
-    
+
     public static function getListaEnObjetos($filtro, $suma) {
         $resultado = NotasConsulta::getLista($filtro, $suma);
         $lista = array();

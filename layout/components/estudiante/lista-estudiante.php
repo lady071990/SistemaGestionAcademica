@@ -15,14 +15,17 @@ if (isset($_REQUEST['identificacion']) || isset($_REQUEST['nombres']) || isset($
 }
 
 foreach ($listaUsuarios as $item) {
+    /*
     $nombreFoto = $item->getId().'_'.$item->getIdentificacion();
     $extension = pathinfo($item->getFoto(), PATHINFO_EXTENSION);
-    $foto = !empty($item->getFoto()) ? "documentos/fotos/{$nombreFoto}.{$extension}" : "documentos/fotos/foto1.jpeg";
+    $foto = !empty($item->getFoto()) ? "./documentos/fotos/{$nombreFoto}.{$extension}" : "documentos/fotos/foto1.jpeg";
+    */
+    $foto = !empty($item->getFoto()) ? "./documentos/fotos/{$item->getFoto()}" : "documentos/fotos/foto1.jpeg";
     
     // Verificar si el archivo existe realmente
-    if (!file_exists($foto) || $item->getFoto() == null) {
+    /*if (!file_exists($foto) || $item->getFoto() == null) {
         $foto = "documentos/fotos/foto1.jpeg";
-    }
+    }*/
     $lista .= "<tr>";
     $lista .= '<th scope="row">' . $count . '</th>';
     $lista .= "<td>{$item->getIdentificacion()}</td>";
@@ -35,6 +38,7 @@ foreach ($listaUsuarios as $item) {
     $lista .= "<td><a href='documentos/hojaVida/{$item->getHojaVida()}' target='_blank' title='Ver la hoja de vida'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
     $lista .= "<td><a href='documentos/soportes/{$item->getDocumentos()}' target='_blank' title='Ver documentos'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
     $lista .= "<td><img class='fotos' src='{$foto}' width='50' height='70' onerror=\"this.src='documentos/fotos/foto1.jpeg'\" /></td>";
+    $lista .= "<td>{$item->getPrograma_academico()}</td>";
     $lista .= "<td>" . Generalidades::getEstadoUsuario($item->getEstado()) . "</td>";
     if ($editar != 2) {
         $lista .= "<td class='as-text-center'>";
@@ -51,7 +55,6 @@ foreach ($listaUsuarios as $item) {
     $count++;
 }
 ?>
-
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
 <div class="as-tab-content">
@@ -114,6 +117,7 @@ foreach ($listaUsuarios as $item) {
                     <th>Hoja de vida</th>
                     <th>Soportes</th>
                     <th>Foto</th>
+                    <th>Programa Académico</th>
                     <th>Estado</th>
                     <?php if ($editar != 2) { ?>
                         <th>Opciones</th>

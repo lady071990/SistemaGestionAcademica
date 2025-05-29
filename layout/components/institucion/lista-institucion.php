@@ -32,6 +32,7 @@ foreach ($institucionesList as $item) {
     $lista .= "<td class='as-text-center'>";
     $lista .= "<a class='as-edit' href='principal.php?CONTENIDO=layout/components/institucion/form-institution.php&accion=Modificar&id={$item->getId()}'>" . Generalidades::getTooltip(1, '') . "</a>";
     $lista .= "<span class='as-trash' onClick='eliminar({$item->getId()})'>" . Generalidades::getTooltip(2, '') . "</span>";
+    $lista .= "<a class='as-checklist' href='principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php&id_universidad={$item->getId()}'>Lista Chequeo</a>";
     $lista .= "</td>";
     $lista .= "</tr>";
     $count++;
@@ -45,7 +46,7 @@ foreach ($institucionesList as $item) {
         <a class="as-btn-back" href="principal.php?CONTENIDO=layout/components/institucion/form-institution.php">Agregar Institución</a>
     </div>
     <div class="as-table-responsive">
-        <table class="as-table">
+        <table id="tablaEstudiantes" class="as-table display">
             <thead>
                 <tr>
                     <th scope="col">#</th>

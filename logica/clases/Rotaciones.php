@@ -82,7 +82,51 @@ class Rotaciones {
     }
 
     
+    // Nuevo método para validar duplicados y solapamiento de fechas
+    private function validarDuplicadosYFechas() {
+        // Verifica si existe alguna rotación para este estudiante y especialidad que esté en curso
+        $sqlDuplicado = "SELECT COUNT(*) AS total 
+                         FROM historial_rotaciones 
+                         WHERE estudiante_id = ? 
+                           AND especialidad_id = ? 
+                           AND estado = 'en_curso'";
+        $resultado = ConectorBD::ejecutarQuery($sqlDuplicado, [$this->estudiante_id, $this->especialidad_id]);
+        if ($resultado[0]['total'] > 0) {
+            return ['error' => 'Ya existe una rotación en curso para esta especialidad.'];
+        }
+
+        // Verifica solapamiento de fechas con otras rotaciones del estudiante
+        $sqlFechas = "SELECT COUNT(*) AS total 
+                      FROM historial_rotaciones
+                      WHERE estudiante_id = ?
+                        AND (
+                            (fecha_inicio <= ? AND fecha_fin >= ?) OR
+                            (fecha_inicio <= ? AND fecha_fin >= ?) OR
+                            (fecha_inicio >= ? AND fecha_fin <= ?)
+                        )";
+        $params = [
+            $this->estudiante_id,
+            $this->fecha_inicio, $this->fecha_inicio,
+            $this->fecha_fin, $this->fecha_fin,
+            $this->fecha_inicio, $this->fecha_fin
+        ];
+        $resultadoFechas = ConectorBD::ejecutarQuery($sqlFechas, $params);
+        if ($resultadoFechas[0]['total'] > 0) {
+            return ['error' => 'Las fechas de la rotación se solapan con otra rotación existente.'];
+        }
+
+        return ['ok' => true];
+    }
+
+    // Modifica guardar para usar la validación
     public function guardar() {
+        $validacion = $this->validarDuplicadosYFechas();
+        if (isset($validacion['error'])) {
+            // Aquí puedes lanzar excepción, o retornar el error para manejarlo en el controlador
+            // throw new Exception($validacion['error']);
+            return $validacion; // retorna error para el controlador
+        }
+
         $cadenaSQL = "INSERT INTO historial_rotaciones (estudiante_id, especialidad_id, fecha_inicio, fecha_fin, estado) VALUES (?, ?, ?, ?, ?)";
         $parametros = [
             $this->estudiante_id,
@@ -95,9 +139,9 @@ class Rotaciones {
         
         if ($resultado) {
             $this->id = ConectorBD::getLastInsertId();
-            return true;
+            return ['ok' => true];
         }
-        return false;
+        return ['error' => 'Error al guardar la rotación.'];
     }
 
     public function modificar() {

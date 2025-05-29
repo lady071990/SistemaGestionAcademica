@@ -15,7 +15,7 @@ if (isset($_REQUEST['buscar'])) {
 
     foreach ($listaUsuarios as $item) {
     $foto = $item->getFoto(); // Asegúrate de que este método exista
-    $rutaFoto = !empty($foto) ? "documentos/fotos/{$foto}" : "documentos/fotos/default.png";
+    $rutaFoto = !empty($foto) ? "./documentos/fotos/{$foto}" : "documentos/fotos/default.png";
 
     $lista .= "<tr>";
     $lista .= '<th scope="row">' . $count . '</th>';
@@ -25,18 +25,16 @@ if (isset($_REQUEST['buscar'])) {
     $lista .= "<td>{$item->getTelefono()}</td>";
     $lista .= "<td>{$item->getEmail()}</td>";
     $lista .= "<td>{$item->getDireccion()}</td>";
+    $lista .= "<td>{$item->getPrograma_academico()}</td>";
     $lista .= "<td><img src='{$rutaFoto}' alt='Foto' width='50' height='50' style='border-radius:50%; object-fit:cover;'></td>"; // FOTO
     $lista .= "<td>" . Generalidades::getEstadoUsuario($item->getEstado()) . "</td>";
     $lista .= "<td class='as-text-center'>";
-    $lista .= "<a class='as-edit' href='layout/boletin.php?identificacion={$item->getIdentificacion()}' target='blank'>" . Generalidades::getTooltip(5, 'Imprimir Boletín') . "</a>";
+    $lista .= "<a class='as-edit' href='principal.php?CONTENIDO=layout/boletin.php&identificacion={$item->getIdentificacion()}' target='blank'>" . Generalidades::getTooltip(5, 'Imprimir Boletín') . "</a>";
     $lista .= "</td>";
     $lista .= "</tr>";
     $count++;
     }
-
 }
-
-
 ?>
 
 <div class="as-form-content">
@@ -83,6 +81,7 @@ if (isset($_REQUEST['buscar'])) {
                     <th scope="col">Teléfono</th>
                     <th scope="col">Email</th>
                     <th scope="col">Dirección</th>
+                    <th scope="col">Programa Académico</th>
                     <th scope="col">Foto</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Opciones</th>

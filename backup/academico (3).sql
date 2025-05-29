@@ -634,7 +634,8 @@ INSERT INTO `roles` (`id`, `nombre`, `valor`) VALUES
 (3, 'Acudiente', 'A'),
 (4, 'Estudiante', 'E'),
 (5, 'Desconocido', 'N'),
-(6, 'Root', 'R');
+(6, 'Root', 'R'),
+(7, 'Universidad', 'U');
 
 -- --------------------------------------------------------
 

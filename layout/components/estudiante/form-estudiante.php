@@ -115,7 +115,19 @@ if (isset($_REQUEST['id'])) {
                 });
                 </script>
 
-
+                <div class="as-form-input">
+                    <label class="hide-label" for="programa_academico" class="form-label">Programa Académico</label>
+                    <input 
+                        type="text" 
+                        id="programa_academico" 
+                        name="programa_academico" 
+                        class="form-control"
+                        value="<?= isset($usuario) ? htmlspecialchars($usuario->getPrograma_academico()) : '' ?>" 
+                        required 
+                        placeholder="Programa Académico. Ej: Medicina, Ingeniería, Derecho..."
+                    >
+                </div>
+                
                 <?php
                 if ($titulo == 'Modificar') {
                 ?>

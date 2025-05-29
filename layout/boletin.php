@@ -1,7 +1,8 @@
-<?php  
-require_once '../logica/clasesGenericas/LibreriasImprimir.php';
+<?php
+
 ?>
 <!doctype html>
+<html>
 <html>
 
 <head>
@@ -87,22 +88,6 @@ require_once '../logica/clasesGenericas/LibreriasImprimir.php';
         }
     </style>
 </head>
-
-<body>
-    <header>
-        <nav class="as-nav-header">
-            <div class="as-first-div">
-                <img class="as-logo" src="img/logoDU.png" alt="logo" />
-            </div>
-            <div class="as-information">
-                <h3 class="as-title">SIDGA - SISTEMA INTEGRAL DE DOCENCIA Y GESTIÓN ACADÉMICA</h3>
-                <p>Plataforma académica del Hospital Universitario Departamental de Nariño, comprometida con la excelencia en la formación 
-                    de profesionales de la salud. Nuestro sistema integra docencia, investigación y servicio, bajo el principio
-                    <span>&quot;FORMANDO LOS PROFESIONALES DE SALUD QUE NARIÑO NECESITA&quot;</span>.</p>
-            </div>
-        </nav>
-    </header>
-
    <?php
     @session_start();
     if (!isset($_SESSION['usuario'])) header('location:../../index.php?mensaje=Acceso no autorizado');
@@ -121,7 +106,7 @@ require_once '../logica/clasesGenericas/LibreriasImprimir.php';
         foreach ($listaNotas as $key) {
             $lista .= '<div class="boletin-container">
                 <div class="header">
-                    <img class="logo" src="img/FORMATO.png" alt="Logo">
+                    <img class="logo" src="layout/img/FORMATO.png" alt="Logo">
                     <h2>FORMATO DE EVALUACIÓN INTERNADO ROTATORIO</h2>
                     <p>' . htmlspecialchars($key->getNombreInstitucion()) . '</p>
                 </div>
@@ -131,9 +116,10 @@ require_once '../logica/clasesGenericas/LibreriasImprimir.php';
                         <p><strong>Identificación:</strong> ' . htmlspecialchars($key->getIdentificacionEstudiante()) . '</p>
                         <p><strong>Nombre:</strong> ' . htmlspecialchars($key->getNombreEstudiante()) . '</p>
                         <p><strong>Grado:</strong> ' . htmlspecialchars($key->getNombreGrado() . ' ' . $key->getNombreGrupo()) . '</p>
+                        <p><strong>Programa Académico:</strong> ' . htmlspecialchars($key->getProgramaAcademico()) . '</p>
                         <p><strong>Periodo Académico:</strong> ' . htmlspecialchars($key->getPeriodoAcademico()) . '</p>
                     </div>
-                    <img class="student-photo" src="documentos/fotos/' . htmlspecialchars($key->getFoto()) . '" alt="Foto del estudiante">
+                    <img class="student-photo" src="./documentos/fotos/' . htmlspecialchars($key->getFoto()) . '" alt="Foto del estudiante">
                 </div>';
 
             $lista .= '<table class="info-table">
@@ -165,9 +151,12 @@ require_once '../logica/clasesGenericas/LibreriasImprimir.php';
                     $detallesActividades = '';
 
                     foreach ($listaNotasAsignadas as $item) {
-                        if ($asignatura->getIdPeriodoAcademico() == $key->getIdPeriodoAcademico() &&
+                        $posision++;
+                        if (
+                            $asignatura->getIdPeriodoAcademico() == $key->getIdPeriodoAcademico() &&
                             $asignatura->getIdentificacionEstudiante() == $item->getIdentificacionEstudiante() &&
-                            $asignatura->getIdAsignatura() == $item->getIdAsignatura()) {
+                            $asignatura->getIdAsignatura() == $item->getIdAsignatura()
+                            ){
                             $detallesActividades .= $item->getNombreTipoActividad() . ': ' . $item->getNota() . '<br>';
                             $cantidadNotas++;
                             $sumaNotas += $item->getNota();
@@ -202,11 +191,6 @@ require_once '../logica/clasesGenericas/LibreriasImprimir.php';
         echo '<h3 style="text-align:center;">No Existen Notas para imprimir</h3>';
     }
     ?>
-
-    <div class="footer">
-        <p>Derechos Reservados &copy; <span id="year"></span></p>
-    </div>
-
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>

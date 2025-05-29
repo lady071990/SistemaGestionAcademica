@@ -16,11 +16,12 @@ class Usuario
     protected $hoja_vida;
     protected $documentos;
     protected $foto;
+    Protected $programa_academico;
 
     public function __construct($campo, $valor) {
     if ($campo != null) {
         if (!is_array($campo)) {
-            $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto FROM usuario WHERE $campo='$valor'";
+            $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico FROM usuario WHERE $campo='$valor'";
             $campo = ConectorBD::ejecutarQuery($cadenaSQL)[0];
         }
 
@@ -38,6 +39,7 @@ class Usuario
             $this->hoja_vida  = isset($campo['hoja_vida']) ? $campo['hoja_vida'] : null;
             $this->documentos = isset($campo['documentos']) ? $campo['documentos'] : null;
             $this->foto = isset($campo['foto']) ? $campo['foto'] : 'foto1.jpeg'; // Valor por defecto
+            $this->programa_academico = $campo['programa_academico'];
         }
     }
 
@@ -48,7 +50,9 @@ class Usuario
     public function getHojaVida() { return $this->hoja_vida; }
     public function getDocumentos() { return $this->documentos; }
     public function getFoto() { return $this->foto; }
+    public function getPrograma_academico() { return $this->programa_academico; }
 
+ 
     public function setTelefono($telefono): void { $this->telefono = $telefono; }
     public function setEmail($email): void { $this->email = $email; }
     public function setDireccion($direccion): void { $this->direccion = $direccion; }
@@ -56,7 +60,9 @@ class Usuario
     public function setHojaVida($hoja_vida): void { $this->hoja_vida = $hoja_vida; }
     public function setDocumentos($documentos): void { $this->documentos = $documentos; }
     public function setFoto($foto): void { $this->foto = $foto; }
+    public function setPrograma_academico($programa_academico): void { $this->programa_academico = $programa_academico; }
 
+ 
     public function getIdentificacion() { return $this->identificacion; }
     public function getId() { return $this->id; }
     public function getNombres() { return $this->nombres; }
@@ -85,9 +91,9 @@ class Usuario
     {
         $clave = md5($this->identificacion);
         $cadenaSQL = "INSERT INTO usuario 
-        (identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto) 
+        (identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico) 
         VALUES 
-        ('$this->identificacion', '$this->nombres', '$this->apellidos', '$this->telefono', '$this->email', '$this->direccion', '$clave', '$this->rol_id', '$this->institucion_educativa_id', '$this->estado', '$this->hoja_vida', '$this->documentos', '$this->foto')";
+        ('$this->identificacion', '$this->nombres', '$this->apellidos', '$this->telefono', '$this->email', '$this->direccion', '$clave', '$this->rol_id', '$this->institucion_educativa_id', '$this->estado', '$this->hoja_vida', '$this->documentos', '$this->foto', '$this->programa_academico')";
         
         ConectorBD::ejecutarQuery($cadenaSQL);
     }
@@ -96,9 +102,9 @@ class Usuario
     {
         $clave = md5($this->clave);
         $cadenaSQL = $this->clave ?
-            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', clave='{$clave}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}' WHERE id='{$ID}'"
+            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', clave='{$clave}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}', programa_academico='{$this->programa_academico}' WHERE id='{$ID}'"
             :
-            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}' WHERE id='{$ID}'";
+            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}', programa_academico='{$this->programa_academico}' WHERE id='{$ID}'";
 
         ConectorBD::ejecutarQuery($cadenaSQL);
     }
@@ -115,7 +121,7 @@ class Usuario
         else $filtro = " WHERE $filtro";
         if ($orden == null || $orden == '') $orden = '';
         else $orden = " ORDER BY $orden";
-        $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto FROM usuario $filtro $orden";
+        $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico FROM usuario $filtro $orden";
         return ConectorBD::ejecutarQuery($cadenaSQL);
     }
     

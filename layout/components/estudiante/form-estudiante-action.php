@@ -58,6 +58,7 @@ switch ($_REQUEST['accion']) {
     $docente->setEmail($_REQUEST['email']);
     $docente->setDireccion($_REQUEST['direccion']);
     $docente->setInstitucion_educativa_id($_REQUEST['institucion_educativa_id']);
+    $docente->setPrograma_academico($_REQUEST['programa_academico']);
     $docente->setEstado($_REQUEST['estado']);
     $docente->setRolId(4);
 
@@ -111,6 +112,7 @@ switch ($_REQUEST['accion']) {
         $docente->setClave($_REQUEST['pass'] ?: $docenteActual->getClave());
         $docente->setDireccion($_REQUEST['direccion']);
         $docente->setInstitucion_educativa_id($_REQUEST['institucion_educativa_id']);
+        $docente->setPrograma_academico($_REQUEST['programa_academico']);
         $docente->setEstado($_REQUEST['estado']);
         $docente->setRolId(4);
 
