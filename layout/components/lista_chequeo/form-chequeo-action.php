@@ -6,41 +6,89 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 require_once 'logica/clases/ListaChequeo.php';
-require_once 'logica/clasesGenericas/ConectorBD.php';
-
-// Verificar acción
-if (!isset($_REQUEST['accion'])) {
-    header('Location: principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php');
-    exit;
-}
 
 $lista = new ListaChequeo(null, null);
 
+/**
+ * Función para convertir nombres de campos a nombres de métodos setter
+ */
+function getSetterMethod($fieldName) {
+    return 'set' . ucfirst($fieldName);
+}
+
+/**
+ * Función para subir archivos PDF
+ */
+function subirPDF($campo, $tipo = '') {
+    if (!isset($_FILES[$campo])) {
+        return null;
+    }
+
+    $file = $_FILES[$campo];
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        error_log("Error al subir archivo {$campo}: " . $file['error']);
+        return null;
+    }
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($file['tmp_name']);
+    if ($mime !== 'application/pdf') {
+        error_log("Archivo {$campo} no es PDF (tipo: {$mime})");
+        return null;
+    }
+
+    $basePath = $_SERVER['DOCUMENT_ROOT'] . '/SistemaGestionAcademica/documentos/';
+    $subfolder = $tipo ? "archivos/{$tipo}/" : "archivos/";
+    $uploadDir = $basePath . $subfolder;
+
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = uniqid() . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
+    $fullPath = $uploadDir . $filename;
+
+    if (!move_uploaded_file($file['tmp_name'], $fullPath)) {
+        error_log("No se pudo mover el archivo {$campo} a {$fullPath}");
+        return null;
+    }
+
+    return $filename;
+}
+
+$documentTypes = [
+    'convenio' => 'convenio',
+    'objetivo_convenio' => 'objconvenio',
+    'vigencia_convenio' => 'vigencia',
+    'deberes' => 'deberes',
+    'poliza_responsabilidad' => 'polizar',
+    'poliza_riesgo_biologico' => 'polizarb',
+    'formas_compensacion' => 'formas',
+    'anexo_tecnico' => 'anexo',
+    'cronograma' => 'cronograma',
+    'esquema_vacunacion' => 'esquema',
+    'ssst' => 'certificado',
+    'arl' => 'arl'
+];
+
 switch ($_REQUEST['accion']) {
     case 'Agregar':
-        // Configurar todos los campos del checklist
         $lista->setInstitucion_educativa_id($_POST['institucion_educativa_id']);
-        $lista->setConvenio(subirPDF('convenio'));
-        $lista->setObjetivo_convenio(subirPDF('objetivo_convenio'));
-        $lista->setVigencia_convenio(subirPDF('vigencia_convenio'));
-        $lista->setDeberes(subirPDF('deberes'));
-        $lista->setPoliza_responsabilidad(subirPDF('poliza_responsabilidad'));
-        $lista->setPoliza_riesgo_biologico(subirPDF('poliza_riesgo_biologico'));
-        $lista->setFormas_compensacion(subirPDF('formas_compensacion'));
-        $lista->setAnexo_tecnico(subirPDF('anexo_tecnico'));
-        $lista->setCronograma(subirPDF('cronograma'));
-        $lista->setEsquema_vacunacion(subirPDF('esquema_vacunacion'));
-        $lista->setSsst(subirPDF('ssst'));
-        $lista->setArl(subirPDF('arl'));
-        $lista->setFecha_subida($_POST['fecha_subida'] ?? date('Y-m-d H:i:s'));
         
+        foreach ($documentTypes as $field => $type) {
+            $method = getSetterMethod($field);
+            $lista->$method(subirPDF($field, $type));
+        }
+        
+        $lista->setFecha_subida($_POST['fecha_subida'] ?? date('Y-m-d H:i:s'));
         $lista->guardar();
         break;
 
     case 'Modificar':
         $lista = new ListaChequeo('id', $_REQUEST['id']);
         
-        // ⚠️ Validación: impedir que una institución modifique registros de otra
         if (isset($_SESSION['usuario']['rol']) && $_SESSION['usuario']['rol'] === 'institucion') {
             $institucionIdSesion = $_SESSION['usuario']['institucion_id'] ?? null;
             if ($lista->getInstitucion_educativa_id() != $institucionIdSesion) {
@@ -48,24 +96,16 @@ switch ($_REQUEST['accion']) {
                 exit;
             }
         }
-        // Actualizar solo los archivos que se hayan subido
-        if (!empty($_FILES['convenio']['name'])) $lista->setConvenio(subirPDF('convenio'));
-        if (!empty($_FILES['objetivo_convenio']['name'])) $lista->setObjetivo_convenio(subirPDF('objetivo_convenio'));
-        if (!empty($_FILES['vigencia_convenio']['name'])) $lista->setVigencia_convenio(subirPDF('vigencia_convenio'));
-        if (!empty($_FILES['deberes']['name'])) $lista->setDeberes(subirPDF('deberes'));
-        if (!empty($_FILES['poliza_responsabilidad']['name'])) $lista->setPoliza_responsabilidad(subirPDF('poliza_responsabilidad'));
-        if (!empty($_FILES['poliza_riesgo_biologico']['name'])) $lista->setPoliza_riesgo_biologico(subirPDF('poliza_riesgo_biologico'));
-        if (!empty($_FILES['formas_compensacion']['name'])) $lista->setFormas_compensacion(subirPDF('formas_compensacion'));
-        if (!empty($_FILES['anexo_tecnico']['name'])) $lista->setAnexo_tecnico(subirPDF('anexo_tecnico'));
-        if (!empty($_FILES['cronograma']['name'])) $lista->setCronograma(subirPDF('cronograma'));
-        if (!empty($_FILES['esquema_vacunacion']['name'])) $lista->setEsquema_vacunacion(subirPDF('esquema_vacunacion'));
-        if (!empty($_FILES['ssst']['name'])) $lista->setSsst(subirPDF('ssst'));
-        if (!empty($_FILES['arl']['name'])) $lista->setArl(subirPDF('arl'));
         
-        // Actualizar otros campos
+        foreach ($documentTypes as $field => $type) {
+            if (!empty($_FILES[$field]['name'])) {
+                $method = getSetterMethod($field);
+                $lista->$method(subirPDF($field, $type));
+            }
+        }
+        
         $lista->setInstitucion_educativa_id($_POST['institucion_educativa_id']);
         $lista->setFecha_subida($_POST['fecha_subida'] ?? date('Y-m-d H:i:s'));
-
         $lista->modificar($_REQUEST['id']);
         break;
 
@@ -75,37 +115,13 @@ switch ($_REQUEST['accion']) {
         break;
 }
 
-    function subirPDF($campo) {
-        if (isset($_FILES[$campo])) {
-            if ($_FILES[$campo]['error'] != UPLOAD_ERR_OK) {
-                return null;
-            }
-
-            // Verificar que sea un PDF
-            $finfo = new finfo(FILEINFO_MIME_TYPE);
-            $mime = $finfo->file($_FILES[$campo]['tmp_name']);
-
-            if ($mime != 'application/pdf') {
-                return null;
-            }
-
-            // Directorio de almacenamiento (ahora dentro de la carpeta pública)
-            $directorio = $_SERVER['DOCUMENT_ROOT'] . '/SistemaGestionAcademica/documentos/archivos/';
-            if (!file_exists($directorio)) {
-                mkdir($directorio, 0755, true);
-            }
-
-            // Generar nombre único
-            $extension = pathinfo($_FILES[$campo]['name'], PATHINFO_EXTENSION);
-            $nombreArchivo = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9-_\.]/', '_', $_FILES[$campo]['name']);
-            $rutaCompleta = $directorio . $nombreArchivo;
-
-            if (move_uploaded_file($_FILES[$campo]['tmp_name'], $rutaCompleta)) {
-                return 'documentos/archivos/' . $nombreArchivo; // Ruta relativa desde la raíz del sitio
-            }
-        }
-        return null;
-    }
+$redirectUrl = 'principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php';
+if (isset($_REQUEST['id_universidad'])) {
+    $redirectUrl .= '&id_universidad=' . urlencode($_REQUEST['id_universidad']);
+}
+if (isset($_REQUEST['mensaje'])) {
+    $redirectUrl .= '&mensaje=' . urlencode($_REQUEST['mensaje']);
+}
 ?>
 
 <script>

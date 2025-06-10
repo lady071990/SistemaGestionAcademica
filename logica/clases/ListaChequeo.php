@@ -222,21 +222,6 @@ class ListaChequeo
         return ConectorBD::ejecutarQuery($cadenaSQL);
     }
     
-    function subirPDF($campo) {
-        if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == UPLOAD_ERR_OK) {
-            $nombre = $_FILES[$campo]['name'];
-            $extension = strtolower(pathinfo($nombre, PATHINFO_EXTENSION));
-
-            if ($extension !== 'pdf') {
-                echo "El archivo '$campo' debe ser un PDF.";
-                return null;
-            }
-
-            return file_get_contents($_FILES[$campo]['tmp_name']);
-        }
-        return null; // o puedes retornar $this->campo actual si estás en modificación
-    }
-    
     public function obtenerPorIdYInstitucion($id, $id_institucion)
     {
         $sql = "SELECT * FROM documentos_chequeo WHERE id = ? AND id_institucion = ?";
