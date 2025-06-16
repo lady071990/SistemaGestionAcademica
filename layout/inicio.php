@@ -6,6 +6,15 @@ if (!isset($_SESSION['usuario'])) {
 }
 ?>
 
+<?php
+$idUniversidad = $_SESSION['institucion_educativa_id'] ?? null;
+$universidad = $idUniversidad ? new InstitucionEducativa('id', $idUniversidad) : null;
+if ($universidad) {
+    echo "<div class='as-universidad'>Universidad: " . $universidad->getNombre() . "</div>";
+}
+?>
+
+
 <div style="text-align: center; margin-top: 100px;">
     <!-- Reemplaza "logo.png" con la ruta de tu logo -->
     <img src="layout/img/logoDU.png" alt="Logo del Sistema" style="max-width: 300px;">

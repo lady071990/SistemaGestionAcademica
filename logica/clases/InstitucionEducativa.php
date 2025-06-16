@@ -189,17 +189,24 @@ class InstitucionEducativa
         return ConectorBD::ejecutarQuery($cadenaSQL);
     }
 
-    public static function getListaEnObjetos($filtro, $orden)
-    {
-    $resultado = InstitucionEducativa::getLista($filtro, $orden);
-    
-    $lista = array();
-    if ($resultado && is_array($resultado)) {
-        for ($i = 0; $i < count($resultado); $i++) {
-            $institucion = new InstitucionEducativa($resultado[$i], null);
-            $lista[$i] = $institucion;
+    public static function getListaEnObjetos($filtro = '', $orden = '', $usuario = null) {
+        // Aplicar filtro adicional para usuarios universidad
+        if ($usuario && $usuario->esUniversidad() && $usuario->getInstitucion_educativa_id()) {
+            $filtroUniversidad = "id = '{$usuario->getInstitucion_educativa_id()}'";
+            $filtro = $filtro ? "($filtro) AND ($filtroUniversidad)" : $filtroUniversidad;
         }
-    }
-    return $lista;
+
+        $where = $filtro ? " WHERE $filtro" : '';
+        $order = $orden ? " ORDER BY $orden" : '';
+        
+        $cadenaSQL = "SELECT * FROM institucion_educativa $where $order";
+        $resultados = ConectorBD::ejecutarQuery($cadenaSQL);
+        
+        $instituciones = [];
+        foreach ($resultados as $fila) {
+            $instituciones[] = new InstitucionEducativa($fila, null);
+        }
+        
+        return $instituciones;
     }
 }

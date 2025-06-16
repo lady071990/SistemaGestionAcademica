@@ -12,6 +12,12 @@ $usuario = $_REQUEST['usuario'];
 $clave = $_REQUEST['clave'];
 $usuario = Usuario::validar($usuario, $clave);
 
+$USUARIO = new Usuario('usuario', $usuario);
+$_SESSION['usuario'] = serialize($USUARIO);
+
+// Asignar la institución educativa asociada
+$_SESSION['institucion_educativa_id'] = $USUARIO->getInstitucion_educativa_id(); // ← Este método debe existir en tu clase Usuario
+
 if ($usuario == null) {
     header('location:../index.php?mensaje=usuario o contraseña no valido');
 } else {

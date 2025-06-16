@@ -86,7 +86,11 @@ class Usuario
     public function __toString() {
         return $this->nombres . ' ' . $this->apellidos;
     }
-
+    
+    public function esUniversidad() {
+        return $this->rol_id == 7; // Rol 7 = Universidad
+    }
+    
     public function guardar()
     {
         $clave = md5($this->identificacion);
@@ -155,4 +159,6 @@ class Usuario
         if (count($resultado) > 0) $usuario = $resultado[0];
         return $usuario;
     }
+    
+    
 }

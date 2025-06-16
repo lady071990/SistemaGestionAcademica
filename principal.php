@@ -7,6 +7,8 @@ if (!isset($_SESSION['usuario'])) header('location: index.php?mensaje=Acceso no 
 $USUARIO = '';
 $USUARIO = unserialize($_SESSION['usuario']);
 $roles = Rol::getListaEnObjetos("id={$USUARIO->getRolId()}", null)[0];
+
+
 ?>
 
 <!doctype html>

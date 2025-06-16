@@ -6,8 +6,17 @@ $count = 1;
 
 $institution = InstitucionEducativa::getListaEnObjetos('id=1', null)[0];
 $anioEscolar = AnioEscolar::getListaEnObjetos('estado=1', null)[0];
+
 $USUARIO = unserialize($_SESSION['usuario']);
-$institucionesList = InstitucionEducativa::getListaEnObjetos(null, 'nombre');
+
+// Si el rol es universidad (rol_id = 7), solo mostrar su institución
+if ($USUARIO->getRolId() == 7) {
+    $idInstitucion = $USUARIO->getInstitucion_educativa_id();
+    $institucionesList = InstitucionEducativa::getListaEnObjetos("id=$idInstitucion", null);
+} else {
+    // Para administradores y secretarias, mostrar todas las instituciones
+    $institucionesList = InstitucionEducativa::getListaEnObjetos(null, 'nombre');
+}
 
 
 foreach ($institucionesList as $item) {
@@ -42,9 +51,11 @@ foreach ($institucionesList as $item) {
     <div>
         <h3 class="as-title-table">GESTIÓN DE INSTITUCIONES EDUCATIVAS</h3>
     </div>
+    <?php if (!$USUARIO->esUniversidad()) { ?>
     <div class="as-form-button-back">
         <a class="as-btn-back" href="principal.php?CONTENIDO=layout/components/institucion/form-institution.php">Agregar Institución</a>
     </div>
+    <?php } ?>
     <div class="as-table-responsive">
         <table id="tablaEstudiantes" class="as-table display">
             <thead>

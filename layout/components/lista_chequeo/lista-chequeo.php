@@ -161,10 +161,10 @@ if (!empty($listaChequeoItems)) {
             <a href="principal.php?CONTENIDO=layout/components/lista_chequeo/form-chequeo.php<?= $idUniversidad ? '&idUniversidad='.$idUniversidad : '' ?>" class="as-btn-back">
                 Agregar Lista De Chequeo
             </a>
-            <?php if ($idUniversidad): ?>
-            <a href="principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php" class="as-btn-back" style="margin-left: 10px;">
-                Ver todas las universidades
-            </a>
+            <?php if ($idUniversidad && !$USUARIO->esUniversidad()): ?>
+                <a href="principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php" class="as-btn-back" style="margin-left: 10px;">
+                    Ver todas las universidades
+                </a>
             <?php endif; ?>
         </div>
         <div class="as-table-responsive">

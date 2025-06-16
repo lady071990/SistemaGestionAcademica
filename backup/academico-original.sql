@@ -485,8 +485,9 @@ VALUES
 (22, 'Registro de Cupos', 'principal.php?CONTENIDO=layout/components/gestion-cupos/lista-gestion-cupos.php', 2, 21, 22);
 (23 'Recepción Aulas', '#', 1, NULL, 23),
 (24 'Registro de Aulas', 'principal.php?CONTENIDO=layout/components/recepcion-aulas/lista-recepcion-aulas.php', 2, 23, 24),
-(25, 'Registro Biblioteca', 'principal.php?CONTENIDO=layout/components/recepcion-biblioteca/lista-recepcion-biblioteca.php', 2, 23, 25);
-
+(25,'Registro Biblioteca', 'principal.php?CONTENIDO=layout/components/recepcion-biblioteca/lista-recepcion-biblioteca.php', 2, 23, 25),
+(26 'Consultas', '#', 1, NULL, 26),
+(27,'Consultas Notas', 'principal.php?CONTENIDO=layout/components/notas/lista-notas-consulta.php', 2, 26, 27);
 --
 --
 --
@@ -583,9 +584,15 @@ VALUES (3, 7, 1),
 (3, 10, 1),
 (3, 13, 1),
 (3, 15, 1),
-(3, 17, 1),
-(3, 20, 1);
+(3, 26, 1),
+(3, 27, 1);
 --
+/**permisos para universidad**/
+INSERT INTO permisos (id_rol, id_menu, estado)
+VALUES
+(7, 27, 1);
+--
+
 --------------------------------------------------------------------------------------
 --
 --
