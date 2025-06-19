@@ -1,125 +1,167 @@
 <?php
 @session_start();
 if (!isset($_SESSION['usuario'])) {
-    header('location:../../index.php?mensaje=Acceso no autorizado');
+    header('location: ../../index.php?mensaje=Acceso no autorizado');
     exit;
 }
-
 include 'logica/clasesGenericas/Librerias.php';
 
-$rolUsuario = $USUARIO->getRolId();
-$institucionId = $USUARIO->getInstitucion_educativa_id();
+$USUARIO = unserialize($_SESSION['usuario']);
+$rol = $USUARIO->getRolId();
+$idInstitucion = $USUARIO->getInstitucion_educativa_id();
 
-if ($rolUsuario != 7) {
-    echo "<p class='as-alert'>Acceso denegado. Solo disponible para universidades.</p>";
-    exit;
-}
-
-$lista = '';
-$count = 1;
 $consulta = '';
+$where = '';
 $bandera = false;
 
-$identificacion = $_REQUEST['identificacion'] ?? '';
-$nombres = $_REQUEST['nombres'] ?? '';
-
-if (isset($_REQUEST['buscar']) && (!empty($identificacion) || !empty($nombres))) {
+// Filtro por institución si es rol 7
+if ($rol == 7 && $idInstitucion) {
+    $where = "u.institucion_educativa_id = $idInstitucion";
     $bandera = true;
-    $condiciones = [];
-
-    if (!empty($identificacion)) {
-        $condiciones[] = "u.identificacion LIKE '%" . addslashes($identificacion) . "%'";
-    }
-
-    if (!empty($nombres)) {
-        $condiciones[] = "u.nombres LIKE '%" . addslashes($nombres) . "%'";
-    }
-
-    // Filtro obligatorio por institución educativa
-    $condiciones[] = "u.institucion_educativa_id = $institucionId";
-
-    $consulta = implode(" AND ", $condiciones);
 }
 
-// Consultar solo si hay filtros válidos
-$listaNotas = $bandera ? NotasConsulta::getListaEnObjetos($consulta, 'u.nombres') : [];
-
-foreach ($listaNotas as $item) {
-    $lista .= "<tr>";
-    $lista .= "<th scope='row'>{$count}</th>";
-    $lista .= "<td>{$item->getPeriodoAcademico()}</td>";
-    $lista .= "<td>{$item->getNombreGrado()}</td>";
-    $lista .= "<td>{$item->getNombreGrupo()}</td>";
-    $lista .= "<td class='as-text-uppercase'>{$item->getNombreEstudiante()}</td>";
-    $lista .= "<td>{$item->getNombreAsignatura()}</td>";
-    $lista .= "<td>{$item->getNombreTipoActividad()}</td>";
-    $lista .= "<td>{$item->getNota()}</td>";
-    $lista .= "</tr>";
-    $count++;
+// Filtros de búsqueda
+if (isset($_REQUEST['buscar'])) {
+    $filtros = [];
+    if (!empty($_REQUEST['identificacion'])) {
+        $filtros[] = "u.identificacion LIKE '%{$_REQUEST['identificacion']}%'";
+    }
+    if (!empty($_REQUEST['nombres'])) {
+        $filtros[] = "u.nombres LIKE '%{$_REQUEST['nombres']}%'";
+    }
+    
+    if (!empty($filtros)) {
+        $filtroStr = implode(' AND ', $filtros);
+        $where .= ($where ? ' AND ' : '') . $filtroStr;
+    }
 }
+
+// Obtener lista de notas
+$condicion = ($where ? $where . ' AND ' : '') . "u.rol_id=4";
+$notas = Notas::getListaEnObjetos($condicion, "u.identificacion, u.apellidos, u.nombres, gd.nombre_grado, g.nombre_grupo, n.id_periodo_academico, a.nombre_asignatura");
+
 ?>
 
-<div class="as-tab-content">
-    <div class="as-tab-header" id="as-tab-header-click">
-        <i class='fas fa-search'></i> Buscar notas por estudiante
-    </div>
-    <div class="as-tab-content-form">
-        <div class="as-form-content">
-            <form method="post" action="principal.php?CONTENIDO=layout/components/notas/lista-notas-consulta.php" autocomplete="off">
-                <div class="as-form-margin">
-                    <h2>Consulta de notas por Universidad</h2>
-                    <div class="as-form-fields">
-                        <div class="as-form-input">
-                            <label class="hide-label" for="identificacion">Identificación</label>
-                            <input type="number" name="identificacion" id="identificacion" placeholder="Identificación" value="<?= htmlspecialchars($identificacion) ?>">
-                        </div>
-                        <div class="as-form-input">
-                            <label class="hide-label" for="nombres">Nombres</label>
-                            <input type="text" name="nombres" id="nombres" placeholder="Nombres" value="<?= htmlspecialchars($nombres) ?>">
-                        </div>
-                    </div>
-                    <input type="hidden" name="buscar" value="buscar">
-                    <div class="as-form-button">
-                        <button class="as-color-btn-green" type="submit">Buscar</button>
-                        <a class="as-color-btn-red" href="principal.php?CONTENIDO=layout/components/notas/lista-notas-consulta.php">Limpiar</a>
-                    </div>
+<div class="as-form-content">
+    <form name="formulario" method="post" action="principal.php?CONTENIDO=layout/components/notas/lista-notas-consulta.php" autocomplete="off">
+        <div class="as-form-margin">
+            <h2>Buscar estudiante para consultar sus notas</h2>
+            <div class="as-form-fields">
+                <div class="as-form-input">
+                    <label class="hide-label" for="identificacion">Identificación</label>
+                    <input type="number" name="identificacion" id="identificacion" placeholder="Identificación" value="<?= isset($_REQUEST['identificacion']) ? htmlspecialchars($_REQUEST['identificacion']) : '' ?>">
                 </div>
-            </form>
+            </div>
+            <div class="as-form-fields">
+                <div class="as-form-input">
+                    <label class="hide-label" for="nombres">Nombres</label>
+                    <input type="text" name="nombres" id="nombres" placeholder="Nombres" value="<?= isset($_REQUEST['nombres']) ? htmlspecialchars($_REQUEST['nombres']) : '' ?>">
+                </div>
+            </div>
+            <input type="hidden" name="buscar" value="buscar">
+            <div class="as-form-button">
+                <a class="as-color-btn-red" href="principal.php?CONTENIDO=layout/inicio.php">
+                    Limpiar
+                </a>
+                <button class="as-color-btn-green" type="submit">
+                    Buscar
+                </button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
-
-<?php if ($bandera && empty($listaNotas)): ?>
-    <p class="as-alert">No se encontraron resultados para su búsqueda.</p>
-<?php endif; ?>
-
 <div class="as-layout-table">
-    <div>
-        <h3 class="as-title-table">LISTA DE CALIFICACIONES</h3>
-    </div>
-    <div class="as-table-responsive">
-        <table class="as-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Periodo académico</th>
-                    <th>Grado</th>
-                    <th>Grupo</th>
-                    <th>Estudiante</th>
-                    <th>Asignatura</th>
-                    <th>Tipo actividad</th>
-                    <th>Nota</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?= $lista ?>
-            </tbody>
-        </table>
-    </div>
+<div>
+    <h3 class="as-title-table">CONSULTAR NOTAS</h3>
 </div>
+</div>
+<?php
+if (count($notas) === 0) {
+    echo "<p>No se encontraron resultados.</p>";
+} else {
+    $estudiantes = [];
 
-<script>
-    document.querySelector("#as-tab-header-click").addEventListener("click", () => {
-        document.querySelector(".as-tab-content-form").classList.toggle("as-tab-content-form-show");
-    });
-</script>
+    foreach ($notas as $nota) {
+        $idEstudiante = $nota->getIdentificacionEstudiante();
+        $idPeriodo = $nota->getPeriodoAcademico()->getId();
+        $nombreAsignatura = $nota->getNombreAsignatura()->getNombreAsignatura();
+        $nombreEstudiante = $nota->getNombreEstudiante();
+
+        if (!isset($estudiantes[$idEstudiante])) {
+            $estudiantes[$idEstudiante] = [
+                'nombres' => $nombreEstudiante->getNombres() . ' ' . $nombreEstudiante->getApellidos(),
+                'grado' => $nota->getNombreGrado(),
+                'grupo' => $nota->getNombreGrupo(),
+                'periodos' => []
+            ];
+        }
+
+        if (!isset($estudiantes[$idEstudiante]['periodos'][$idPeriodo])) {
+            $estudiantes[$idEstudiante]['periodos'][$idPeriodo] = [
+                'nombre_periodo' => $nota->getPeriodoAcademico()->getNombre(),
+                'asignaturas' => []
+            ];
+        }
+
+        if (!isset($estudiantes[$idEstudiante]['periodos'][$idPeriodo]['asignaturas'][$nombreAsignatura])) {
+            $estudiantes[$idEstudiante]['periodos'][$idPeriodo]['asignaturas'][$nombreAsignatura] = [
+                'actividades' => [],
+                'total' => 0,
+                'cantidad' => 0
+            ];
+        }
+
+        $actividad = $nota->getNombreTipoActividad();
+        $nombreActividad = $actividad ? $actividad->getNombreActividad() : 'Sin competencia';
+
+        $notaValor = $nota->getNota();
+
+        $estudiantes[$idEstudiante]['periodos'][$idPeriodo]['asignaturas'][$nombreAsignatura]['actividades'][] = [
+            'competencia' => $nombreActividad,
+            'nota' => $notaValor
+        ];
+
+        $estudiantes[$idEstudiante]['periodos'][$idPeriodo]['asignaturas'][$nombreAsignatura]['total'] += $notaValor;
+        $estudiantes[$idEstudiante]['periodos'][$idPeriodo]['asignaturas'][$nombreAsignatura]['cantidad']++;
+    }
+
+    foreach ($estudiantes as $identificacion => $datosEstudiante) {
+        echo "<div style='margin-bottom: 30px; border: 1px solid #ccc; padding: 10px;'>";
+        echo "<strong>Identificación:</strong> $identificacion<br>";
+        echo "<strong>Nombre:</strong> {$datosEstudiante['nombres']}<br>";
+        echo "<strong>Grado:</strong> {$datosEstudiante['grado']} - <strong>Grupo:</strong> {$datosEstudiante['grupo']}<br>";
+
+        foreach ($datosEstudiante['periodos'] as $periodo) {
+            echo "<br><strong>Periodo:</strong> {$periodo['nombre_periodo']}<br>";
+
+            echo "<table border='1' cellpadding='5' style='width:100%; margin-top:10px;'>";
+            echo "<tr><th>Asignatura</th><th>Actividad</th><th>Nota</th></tr>";
+
+            $totalGeneral = 0;
+            $cantidadGeneral = 0;
+
+            foreach ($periodo['asignaturas'] as $asignaturaNombre => $asignatura) {
+                foreach ($asignatura['actividades'] as $actividad) {
+                    echo "<tr>";
+                    echo "<td>$asignaturaNombre</td>";
+                    echo "<td>{$actividad['competencia']}</td>";
+                    echo "<td>{$actividad['nota']}</td>";
+                    echo "</tr>";
+                }
+
+                $promedioAsignatura = $asignatura['cantidad'] > 0 ? round($asignatura['total'] / $asignatura['cantidad'], 2) : 0;
+                echo "<tr><td colspan='3' align='right'><strong>Promedio $asignaturaNombre:</strong> $promedioAsignatura</td></tr>";
+
+                $totalGeneral += $asignatura['total'];
+                $cantidadGeneral += $asignatura['cantidad'];
+            }
+
+            $promedioGeneral = $cantidadGeneral > 0 ? round($totalGeneral / $cantidadGeneral, 2) : 0;
+            echo "<tr><td colspan='3' align='right'><strong>Promedio General:</strong> $promedioGeneral</td></tr>";
+            echo "</table>";
+        }
+
+        echo "</div>";
+    }
+}
+?>

@@ -17,5 +17,3 @@ foreach ($arrayGrupo as $paramGr) {
 }
 
 echo $selectMenuGrupo;
-
-
