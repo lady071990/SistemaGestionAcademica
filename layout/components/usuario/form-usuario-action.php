@@ -14,9 +14,11 @@ switch ($_REQUEST['accion']) {
     $docente->setEmail($_REQUEST['email']);
     $docente->setClave($_REQUEST['pass']);
     $docente->setDireccion($_REQUEST['direccion']);
+    /*
     $docente->setHojaVida($_REQUEST['hojavida']);
     $docente->setDocumentos($_REQUEST['documentos']);
     $docente->setFoto($_REQUEST['foto']);
+     */
     $docente->setEstado($_REQUEST['estado']);
     $docente->setRolId($_REQUEST['rol_id']);
     $docente->modificar($_REQUEST['id']);

@@ -48,7 +48,7 @@ if (isset($_REQUEST['id'])) {
                     <input type="text" name="direccion" id="direccion" value="<?= $array->getDireccion() ?>" required placeholder="Dirección">
                 </div>
                 
-                <div class="as-form-input">
+                <?php /*<div class="as-form-input">
                     <div class="form-group">
                         <label class="hide-label" for="hojavida">Hoja de Vida</label>
                         <input type="file" name="hojaVida" value="<?= $array->getHojaVida()  ?>" class="form-control" required placeholder="Hoja Vida"> 
@@ -67,7 +67,7 @@ if (isset($_REQUEST['id'])) {
                         <label class="hide-label" for="foto">Foto</label>
                         <input type="file" name="foto" value="<?= $array->getFoto() ?>" class="form-control" required placeholder="Foto"> 
                     </div>
-                </div>
+                </div>*/ ?>
                 
 
                 <?php

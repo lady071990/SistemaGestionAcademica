@@ -52,7 +52,7 @@ $listaUsuarios = Usuario::getListaEnObjetos("id={$USUARIO->getId()}", '')[0];
             </div>
         </div>
         
-        <div class="as-institution">
+        <?php /*<div class="as-institution">
             <div class="as-institution-title">
                 <h4>Hoja de Vida</h4>
             </div>
@@ -90,7 +90,7 @@ $listaUsuarios = Usuario::getListaEnObjetos("id={$USUARIO->getId()}", '')[0];
                 <?php endif; ?>
             </div>
         </div>
-        
+        */ ?>
         <div class="as-institution">
             <div class="as-institution-title">
                 <h4>Rol</h4>

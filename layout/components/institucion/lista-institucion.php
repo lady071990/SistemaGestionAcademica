@@ -49,11 +49,11 @@ foreach ($institucionesList as $item) {
 ?>
 <div class="as-layout-table">
     <div>
-        <h3 class="as-title-table">GESTIÓN DE INSTITUCIONES EDUCATIVAS</h3>
+        <h3 class="as-title-table">GESTIÓN DE UNIVERSIDADES</h3>
     </div>
     <?php if (!$USUARIO->esUniversidad()) { ?>
     <div class="as-form-button-back">
-        <a class="as-btn-back" href="principal.php?CONTENIDO=layout/components/institucion/form-institution.php">Agregar Institución</a>
+        <a class="as-btn-back" href="principal.php?CONTENIDO=layout/components/institucion/form-institution.php">Agregar Universidad</a>
     </div>
     <?php } ?>
     <div class="as-table-responsive">
