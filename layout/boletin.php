@@ -196,32 +196,80 @@
                         </tr>';
             }
         }
+            $lista .= '</tbody></table>';
 
-        $lista .= '</tbody></table>
+        // Buscar observación del estudiante para el año escolar activo
+        require_once 'logica/clases/ObservacionBoletin.php';
+        require_once 'logica/clases/AnioEscolar.php';
+
+        $anioActivo = AnioEscolar::getListaEnObjetos("estado=1", null);
+        $idAnioActivo = ($anioActivo && count($anioActivo) > 0) ? $anioActivo[0]->getId() : null;
+
+        $textoObservacion = 'Sin observaciones registradas.';
+
+        if ($idAnioActivo) {
+            $observacionBoletin = ObservacionBoletin::buscarObservacion($key->getIdUsuarioEstudiante(), $idAnioActivo);
+
+            if ($observacionBoletin) {
+                $texto = nl2br(htmlspecialchars($observacionBoletin->getObservacion()));
+
+                $fechaOriginal = $observacionBoletin->getFecha_registro();
+                $fechaFormateada = '';
+
+                if ($fechaOriginal && $fechaOriginal !== '0000-00-00') {
+                    $meses = [
+                        '01' => 'enero', '02' => 'febrero', '03' => 'marzo',
+                        '04' => 'abril', '05' => 'mayo', '06' => 'junio',
+                        '07' => 'julio', '08' => 'agosto', '09' => 'septiembre',
+                        '10' => 'octubre', '11' => 'noviembre', '12' => 'diciembre'
+                    ];
+
+                    $fechaSinHora = explode(' ', $fechaOriginal)[0]; // "2025-07-17"
+                    $partes = explode('-', $fechaSinHora);
+                    $dia = ltrim($partes[2], '0'); // Quita ceros a la izquierda
+                    $mes = $meses[$partes[1]] ?? '';
+                    $anio = $partes[0];
+
+                    $fechaFormateada = "$dia de $mes $anio";
+                }
+
+                $textoObservacion = "$texto<br><em>Fecha: $fechaFormateada</em>";
+            }
+        }
+
+        // Concatenar al HTML
+        $lista .= '
             <div style="margin-top: 30px;">
                 <p><strong>Observaciones:</strong></p>
-                <div style="border: 1px solid #000; height: 80px; padding: 10px;"></div>
+                <div style="border: 1px solid #000; min-height: 80px; padding: 10px;">' . $textoObservacion . '</div>
             </div>
 
-            <div style="margin-top: 20px; display: flex; justify-content: space-between; width: 100%;">
-                <div>
-                    <strong>Resultado:</strong><br>
-                    <div class="aprobado-reprobado">
-                        <span>' . ($promedio >= 3.0 ? '☑' : '☐') . ' APROBADO</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span>' . ($promedio < 3.0 ? '☑' : '☐') . ' REPROBADO</span>
-                    </div>
-                </div>
+    <div style="margin-top: 20px; display: flex; justify-content: space-between; width: 100%;">
+        <div>
+            <strong>Resultado:</strong><br>
+            <div class="aprobado-reprobado">
+                <span>' . ($promedio >= 3.0 ? '☑' : '☐') . ' APROBADO</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span>' . ($promedio < 3.0 ? '☑' : '☐') . ' REPROBADO</span>
             </div>
+        </div>
+    </div>
 
-            <div class="firma-coordinador">
-                <p>__________________________</p>
-                <p>Martin Caicedo</p>
-                <p><small>Coordinación Docencia e Investigación</small></p>
-            </div>
-        </div>';
+    <div class="firma-coordinador" style="text-align: center; margin-top: 40px;">
+        <img src="layout/img/firma.png" alt="Firma" style="height: 100px; margin-bottom: 5px;">
+
+        <hr style="width: 200px; border: 1px solid #000; margin: 10px auto 5px auto;">
+
+        <p style="font-weight: bold; margin: 0;">Martín Caicedo</p>
+        <p style="margin: 0;"><small>Coordinación Docencia e Investigación</small></p>
+    </div>
+
+
+
+    </div>';
+            }
     }
-}
     ?>
+
 
     <div class="print-button">
         <button onclick="window.print()">Imprimir</button>
