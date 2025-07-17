@@ -487,7 +487,8 @@ VALUES
 (24 'Registro de Aulas', 'principal.php?CONTENIDO=layout/components/recepcion-aulas/lista-recepcion-aulas.php', 2, 23, 24),
 (25,'Registro Biblioteca', 'principal.php?CONTENIDO=layout/components/recepcion-biblioteca/lista-recepcion-biblioteca.php', 2, 23, 25),
 (26 'Consultas', '#', 1, NULL, 26),
-(27,'Consultas Notas', 'principal.php?CONTENIDO=layout/components/notas/lista-notas-consulta.php', 2, 26, 27);
+(27,'Consultas Notas', 'principal.php?CONTENIDO=layout/components/notas/lista-notas-consulta.php', 2, 26, 27),
+(28 'Gestión Documental', 'principal.php?CONTENIDO=layout/inicio.php', 1, NULL, 28);
 --
 --
 --
@@ -518,7 +519,8 @@ VALUES (6, 1, 1),
     (6, 22, 1),
     (6, 23, 1),
     (6, 24, 1),
-    (6, 25, 1);
+    (6, 25, 1),
+    (6, 28, 1);
 
 --rol=1 secretaria
 INSERT INTO permisos (id_rol, id_menu, estado)
@@ -546,7 +548,8 @@ VALUES (1, 1, 1),
     (1, 22, 1),
     (1, 23, 1),
     (1, 24, 1),
-    (1, 25, 1);
+    (1, 25, 1),
+    (6, 28, 1);
 
 --
 --

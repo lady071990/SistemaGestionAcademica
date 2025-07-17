@@ -17,11 +17,16 @@ class Usuario
     protected $documentos;
     protected $foto;
     Protected $programa_academico;
+    protected $tipo_vinculacion;
+    protected $experiencia_laboral;
+    protected $certificacion_postgrado;
+    protected $fecha_certificacion;
+    protected $perfil_profesional;
 
     public function __construct($campo, $valor) {
     if ($campo != null) {
         if (!is_array($campo)) {
-            $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico FROM usuario WHERE $campo='$valor'";
+            $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico, tipo_vinculacion, experiencia_laboral, certificacion_postgrado, fecha_certificacion, perfil_profesional FROM usuario WHERE $campo='$valor'";
             $campo = ConectorBD::ejecutarQuery($cadenaSQL)[0];
         }
 
@@ -40,6 +45,11 @@ class Usuario
             $this->documentos = isset($campo['documentos']) ? $campo['documentos'] : null;
             $this->foto = isset($campo['foto']) ? $campo['foto'] : 'foto1.jpeg'; // Valor por defecto
             $this->programa_academico = $campo['programa_academico'];
+            $this->tipo_vinculacion = $campo['tipo_vinculacion'] ?? null;
+            $this->experiencia_laboral = $campo['experiencia_laboral'] ?? null;
+            $this->certificacion_postgrado = $campo['certificacion_postgrado'] ?? 0;
+            $this->fecha_certificacion = $campo['fecha_certificacion'] ?? null;
+            $this->perfil_profesional = $campo['perfil_profesional'] ?? null;
         }
     }
 
@@ -78,6 +88,18 @@ class Usuario
     public function setRolId($rol_id): void { $this->rol_id = $rol_id; }
     public function setInstitucion_educativa_id($institucion_educativa_id): void {$this->institucion_educativa_id = $institucion_educativa_id;}
     public function setClave($clave): void { $this->clave = $clave; }
+    
+    public function setTipoVinculacion($valor) { $this->tipo_vinculacion = $valor; }
+    public function setExperienciaLaboral($valor) { $this->experiencia_laboral = $valor; }
+    public function setCertificacionPostgrado($valor) { $this->certificacion_postgrado = $valor; }
+    public function setFechaCertificacion($valor) { $this->fecha_certificacion = $valor; }
+    public function setPerfilProfesional($valor) { $this->perfil_profesional = $valor; }
+
+    public function getTipoVinculacion() { return $this->tipo_vinculacion; }
+    public function getExperienciaLaboral() { return $this->experiencia_laboral; }
+    public function getCertificacionPostgrado() { return $this->certificacion_postgrado; }
+    public function getFechaCertificacion() { return $this->fecha_certificacion; }
+    public function getPerfilProfesional() { return $this->perfil_profesional; }
 
     public function getRolNombre() {
         return new Rol('id', $this->rol_id);
@@ -95,9 +117,9 @@ class Usuario
     {
         $clave = md5($this->identificacion);
         $cadenaSQL = "INSERT INTO usuario 
-        (identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico) 
+        (identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico, tipo_vinculacion, experiencia_laboral, certificacion_postgrado, fecha_certificacion, perfil_profesional) 
         VALUES 
-        ('$this->identificacion', '$this->nombres', '$this->apellidos', '$this->telefono', '$this->email', '$this->direccion', '$clave', '$this->rol_id', '$this->institucion_educativa_id', '$this->estado', '$this->hoja_vida', '$this->documentos', '$this->foto', '$this->programa_academico')";
+        ('$this->identificacion', '$this->nombres', '$this->apellidos', '$this->telefono', '$this->email', '$this->direccion', '$clave', '$this->rol_id', '$this->institucion_educativa_id', '$this->estado', '$this->hoja_vida', '$this->documentos', '$this->foto', '$this->programa_academico', '$this->tipo_vinculacion', '$this->experiencia_laboral', '$this->certificacion_postgrado', '$this->fecha_certificacion', '$this->perfil_profesional')";
         
         ConectorBD::ejecutarQuery($cadenaSQL);
     }
@@ -106,9 +128,11 @@ class Usuario
     {
         $clave = md5($this->clave);
         $cadenaSQL = $this->clave ?
-            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', clave='{$clave}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}', programa_academico='{$this->programa_academico}' WHERE id='{$ID}'"
+            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', clave='{$clave}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}', programa_academico='{$this->programa_academico}', tipo_vinculacion='{$this->tipo_vinculacion}', experiencia_laboral='{$this->experiencia_laboral}',
+            certificacion_postgrado='{$this->certificacion_postgrado}', fecha_certificacion='{$this->fecha_certificacion}', perfil_profesional='{$this->perfil_profesional}' WHERE id='{$ID}'"
             :
-            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}', programa_academico='{$this->programa_academico}' WHERE id='{$ID}'";
+            "UPDATE usuario SET identificacion='{$this->identificacion}', nombres='{$this->nombres}', apellidos='{$this->apellidos}', telefono='{$this->telefono}', email='{$this->email}', direccion='{$this->direccion}', rol_id='{$this->rol_id}', institucion_educativa_id='{$this->institucion_educativa_id}', estado='{$this->estado}', hoja_vida='{$this->hoja_vida}', documentos='{$this->documentos}', foto='{$this->foto}', programa_academico='{$this->programa_academico}',                 tipo_vinculacion='{$this->tipo_vinculacion}',
+            experiencia_laboral='{$this->experiencia_laboral}', certificacion_postgrado='{$this->certificacion_postgrado}', fecha_certificacion='{$this->fecha_certificacion}', perfil_profesional='{$this->perfil_profesional}' WHERE id='{$ID}'";
 
         ConectorBD::ejecutarQuery($cadenaSQL);
     }
@@ -125,7 +149,7 @@ class Usuario
         else $filtro = " WHERE $filtro";
         if ($orden == null || $orden == '') $orden = '';
         else $orden = " ORDER BY $orden";
-        $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico FROM usuario $filtro $orden";
+        $cadenaSQL = "SELECT id, identificacion, nombres, apellidos, telefono, email, direccion, clave, rol_id, institucion_educativa_id, estado, hoja_vida, documentos, foto, programa_academico, tipo_vinculacion, experiencia_laboral, certificacion_postgrado, fecha_certificacion, perfil_profesional FROM usuario $filtro $orden";
         return ConectorBD::ejecutarQuery($cadenaSQL);
     }
     
@@ -160,5 +184,16 @@ class Usuario
         return $usuario;
     }
     
+    public function getPerfilResumido() {
+        return substr(strip_tags($this->getPerfilProfesional()), 0, 100) . '...';
+    }
+
+    public function certificacionValida() {
+        if (!$this->getCertificacionPostgrado() || !$this->getFechaCertificacion()) return false;
+        $fecha = new DateTime($this->getFechaCertificacion());
+        $hoy = new DateTime();
+        $diff = $hoy->diff($fecha);
+        return $diff->y == 0 && $diff->m <= 6;
+    }
     
 }

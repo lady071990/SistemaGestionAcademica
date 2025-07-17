@@ -60,12 +60,8 @@ function subirPDF($campo, $tipo = '') {
 
 $documentTypes = [
     'convenio' => 'convenio',
-    'objetivo_convenio' => 'objconvenio',
-    'vigencia_convenio' => 'vigencia',
-    'deberes' => 'deberes',
     'poliza_responsabilidad' => 'polizar',
     'poliza_riesgo_biologico' => 'polizarb',
-    'formas_compensacion' => 'formas',
     'anexo_tecnico' => 'anexo',
     'cronograma' => 'cronograma',
     'esquema_vacunacion' => 'esquema',
@@ -116,8 +112,8 @@ switch ($_REQUEST['accion']) {
 }
 
 $redirectUrl = 'principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php';
-if (isset($_REQUEST['id_universidad'])) {
-    $redirectUrl .= '&id_universidad=' . urlencode($_REQUEST['id_universidad']);
+if (isset($_POST['id_universidad'])) {
+    $redirectUrl .= '&id_universidad=' . urlencode($_POST['id_universidad']);
 }
 if (isset($_REQUEST['mensaje'])) {
     $redirectUrl .= '&mensaje=' . urlencode($_REQUEST['mensaje']);

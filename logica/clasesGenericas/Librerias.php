@@ -22,3 +22,5 @@ require_once 'logica/clases/NotaConsulta.php';
 require_once 'logica/clases/GrupoEstudiante.php';
 require_once 'logica/clases/Rotaciones.php';
 require_once 'logica/clases/ListaChequeo.php';
+require_once 'logica/clases/InfoDocencia.php';
+require_once 'logica/clases/ObservacionBoletin.php';

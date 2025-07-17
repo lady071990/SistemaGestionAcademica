@@ -38,12 +38,14 @@ if (isset($_REQUEST['id'])) {
 ?>
 
 <div class="as-form-button-back">
-    <a href="principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php" class="as-btn-back">Regresar</a>
+    <a href="principal.php?CONTENIDO=layout/components/lista_chequeo/lista-chequeo.php<?= $idUniversidad ? '&id_universidad=' . $idUniversidad : '' ?>" class="as-btn-back">Regresar</a>
 </div>
+
 
 <div class="as-form-content">
     <form name="formulario" method="post" enctype="multipart/form-data" 
-          action="principal.php?CONTENIDO=layout/components/lista_chequeo/form-chequeo-action.php" autocomplete="off">
+        action="principal.php?CONTENIDO=layout/components/lista_chequeo/form-chequeo-action.php" autocomplete="off">
+        <input type="hidden" name="id_universidad" value="<?= $idUniversidad ?>">
         <div class="as-form-margin">
             <h2><?= $titulo ?> Lista de Chequeo</h2>
 
@@ -80,33 +82,6 @@ if (isset($_REQUEST['id'])) {
                         <p class="as-info-text">Documento actual: Cargado</p>
                     <?php endif; ?>
                 </div>
-                
-                <div class="as-form-input">
-                    <label class="label" for="objetivo_convenio">Objetivo del Convenio</label>
-                    <input type="file" name="objetivo_convenio" id="objetivo_convenio" accept="application/pdf" <?= $titulo === 'Agregar' ? 'required' : '' ?>>
-                    <?php if ($listaChequeo && $listaChequeo->getObjetivo_convenio()): ?>
-                        <p class="as-info-text">Documento actual: Cargado</p>
-                    <?php endif; ?>
-                </div>
-            </div>
-            
-            <div class="as-form-fields">
-                <div class="as-form-input">
-                    <label class="label" for="vigencia_convenio">Vigencia del Convenio</label>
-                    <input type="file" name="vigencia_convenio" id="vigencia_convenio" accept="application/pdf" <?= $titulo === 'Agregar' ? 'required' : '' ?>>
-                    <?php if ($listaChequeo && $listaChequeo->getVigencia_convenio()): ?>
-                        <p class="as-info-text">Documento actual: Cargado</p>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="as-form-input">
-                    <label class="label" for="deberes">Deberes y Responsabilidades</label>
-                    <input type="file" name="deberes" id="deberes" accept="application/pdf" <?= $titulo === 'Agregar' ? 'required' : '' ?>>
-                    <?php if ($listaChequeo && $listaChequeo->getDeberes()): ?>
-                        <p class="as-info-text">Documento actual: Cargado</p>
-                    <?php endif; ?>
-                </div>
-            </div>
 
             <!-- Sección Pólizas y Seguros -->
             <h3 class="as-section-title">Pólizas y Seguros</h3>
@@ -130,15 +105,7 @@ if (isset($_REQUEST['id'])) {
 
             <!-- Sección Documentos Complementarios -->
             <h3 class="as-section-title">Documentos Complementarios</h3>
-            <div class="as-form-fields">
-                <div class="as-form-input">
-                    <label class="label" for="formas_compensacion">Formas de Compensación</label>
-                    <input type="file" name="formas_compensacion" id="formas_compensacion" accept="application/pdf" <?= $titulo === 'Agregar' ? 'required' : '' ?>>
-                    <?php if ($listaChequeo && $listaChequeo->getFormas_compensacion()): ?>
-                        <p class="as-info-text">Documento actual: Cargado</p>
-                    <?php endif; ?>
-                </div>
-                
+            <div class="as-form-fields">  
                 <div class="as-form-input">
                     <label class="label" for="anexo_tecnico">Anexo Técnico</label>
                     <input type="file" name="anexo_tecnico" id="anexo_tecnico" accept="application/pdf" <?= $titulo === 'Agregar' ? 'required' : '' ?>>

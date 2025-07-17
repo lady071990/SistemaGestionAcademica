@@ -46,12 +46,8 @@ if (!empty($listaChequeoItems)) {
         
         // Documentos con icono PDF
         $lista .= "<td><a href='documentos/archivos/convenio/{$item->getConvenio()}' target='_blank' title='Ver convenio'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
-        $lista .= "<td><a href='documentos/archivos/objconvenio/{$item->getObjetivo_convenio()}' target='_blank' title='Ver Objetivo del convenio'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
-        $lista .= "<td><a href='documentos/archivos/vigencia/{$item->getVigencia_convenio()}' target='_blank' title='Ver la vigencia del convenio'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
-        $lista .= "<td><a href='documentos/archivos/deberes/{$item->getDeberes()}' target='_blank' title='Ver los deberes'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
         $lista .= "<td><a href='documentos/archivos/polizar/{$item->getPoliza_responsabilidad()}' target='_blank' title='Ver poliza de responsabilidad'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
         $lista .= "<td><a href='documentos/archivos/polizarb/{$item->getPoliza_riesgo_biologico()}' target='_blank' title='Ver poliza de riesgo biologico'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
-        $lista .= "<td><a href='documentos/archivos/formas/{$item->getFormas_compensacion()}' target='_blank' title='Ver formas de compensacion'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
         $lista .= "<td><a href='documentos/archivos/anexo/{$item->getAnexo_tecnico()}' target='_blank' title='Ver anexo tecnico'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
         $lista .= "<td><a href='documentos/archivos/cronograma/{$item->getCronograma()}' target='_blank' title='Ver cronograma'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
         $lista .= "<td><a href='documentos/archivos/esquema/{$item->getEsquema_vacunacion()}' target='_blank' title='Ver esquema de vacunacion'><button type='button' class='btn btn-outline-danger'><img src='layout/img/PDF2.png' alt='PDF' style='width:20px; height:20px;'></button></a></td>";
@@ -176,12 +172,8 @@ if (!empty($listaChequeoItems)) {
                         <th>Universidad</th>
                         <?php endif; ?>
                         <th>Convenio</th>
-                        <th>Objetivo</th>
-                        <th>Vigencia</th>
-                        <th>Deberes</th>
                         <th>Póliza Resp.</th>
                         <th>Póliza Riesgo</th>
-                        <th>Compensación</th>
                         <th>Anexo</th>
                         <th>Cronograma</th>
                         <th>Vacunación</th>

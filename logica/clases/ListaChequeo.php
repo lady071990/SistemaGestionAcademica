@@ -5,12 +5,8 @@ class ListaChequeo
     protected $id;
     protected $institucion_educativa_id;
     protected $convenio;
-    protected $objetivo_convenio;
-    protected $vigencia_convenio;
-    protected $deberes;
     protected $poliza_responsabilidad;
     protected $poliza_riesgo_biologico;
-    protected $formas_compensacion;
     protected $anexo_tecnico;
     protected $cronograma;
     protected $esquema_vacunacion;
@@ -21,7 +17,7 @@ class ListaChequeo
     public function __construct($campo, $valor)
     {
         if (!is_array($campo)) {
-            $cadenaSQL = "SELECT id, institucion_educativa_id, convenio, objetivo_convenio, vigencia_convenio, deberes, poliza_responsabilidad, poliza_riesgo_biologico, formas_compensacion, anexo_tecnico, cronograma, esquema_vacunacion, ssst, arl, fecha_subida FROM documentos WHERE $campo=$valor";
+            $cadenaSQL = "SELECT id, institucion_educativa_id, convenio, poliza_responsabilidad, poliza_riesgo_biologico, anexo_tecnico, cronograma, esquema_vacunacion, ssst, arl, fecha_subida FROM documentos WHERE $campo=$valor";
             $resultado = ConectorBD::ejecutarQuery($cadenaSQL);
 
             if ($resultado && count($resultado) > 0) {
@@ -35,12 +31,8 @@ class ListaChequeo
             $this->id = $campo['id'];
             $this->institucion_educativa_id = $campo['institucion_educativa_id'];
             $this->convenio = $campo['convenio'];
-            $this->objetivo_convenio = $campo['objetivo_convenio'];
-            $this->vigencia_convenio = $campo['vigencia_convenio'];
-            $this->deberes = $campo['deberes'];
             $this->poliza_responsabilidad = $campo['poliza_responsabilidad'];
             $this->poliza_riesgo_biologico = $campo['poliza_riesgo_biologico'];
-            $this->formas_compensacion = $campo['formas_compensacion'];
             $this->anexo_tecnico = $campo['anexo_tecnico'];
             $this->cronograma = $campo['cronograma'];
             $this->esquema_vacunacion = $campo['esquema_vacunacion'];
@@ -62,28 +54,12 @@ class ListaChequeo
         return $this->convenio;
     }
 
-    public function getObjetivo_convenio() {
-        return $this->objetivo_convenio;
-    }
-
-    public function getVigencia_convenio() {
-        return $this->vigencia_convenio;
-    }
-
-    public function getDeberes() {
-        return $this->deberes;
-    }
-
     public function getPoliza_responsabilidad() {
         return $this->poliza_responsabilidad;
     }
 
     public function getPoliza_riesgo_biologico() {
         return $this->poliza_riesgo_biologico;
-    }
-
-    public function getFormas_compensacion() {
-        return $this->formas_compensacion;
     }
 
     public function getAnexo_tecnico() {
@@ -122,28 +98,12 @@ class ListaChequeo
         $this->convenio = $convenio;
     }
 
-    public function setObjetivo_convenio($objetivo_convenio): void {
-        $this->objetivo_convenio = $objetivo_convenio;
-    }
-
-    public function setVigencia_convenio($vigencia_convenio): void {
-        $this->vigencia_convenio = $vigencia_convenio;
-    }
-
-    public function setDeberes($deberes): void {
-        $this->deberes = $deberes;
-    }
-
     public function setPoliza_responsabilidad($poliza_responsabilidad): void {
         $this->poliza_responsabilidad = $poliza_responsabilidad;
     }
 
     public function setPoliza_riesgo_biologico($poliza_riesgo_biologico): void {
         $this->poliza_riesgo_biologico = $poliza_riesgo_biologico;
-    }
-
-    public function setFormas_compensacion($formas_compensacion): void {
-        $this->formas_compensacion = $formas_compensacion;
     }
 
     public function setAnexo_tecnico($anexo_tecnico): void {
@@ -177,11 +137,10 @@ class ListaChequeo
     
     public function guardar()
     {
-        $cadenaSQL = "INSERT INTO documentos (institucion_educativa_id, convenio, objetivo_convenio, vigencia_convenio, deberes, poliza_responsabilidad, poliza_riesgo_biologico, formas_compensacion, anexo_tecnico, cronograma, esquema_vacunacion, ssst, arl, fecha_subida)"
+        $cadenaSQL = "INSERT INTO documentos (institucion_educativa_id, convenio, poliza_responsabilidad, poliza_riesgo_biologico, anexo_tecnico, cronograma, esquema_vacunacion, ssst, arl, fecha_subida)"
                 . " VALUES ('$this->institucion_educativa_id',
-                    '$this->convenio', '$this->objetivo_convenio', '$this->vigencia_convenio', '$this->deberes', '$this->poliza_responsabilidad', '$this->poliza_riesgo_biologico',
-                    '$this->formas_compensacion', '$this->anexo_tecnico', '$this->cronograma',
-                    '$this->esquema_vacunacion', '$this->ssst', '$this->arl',
+                    '$this->convenio', '$this->poliza_responsabilidad', '$this->poliza_riesgo_biologico',
+                    '$this->anexo_tecnico', '$this->cronograma', '$this->esquema_vacunacion', '$this->ssst', '$this->arl',
                     '$this->fecha_subida')";
         ConectorBD::ejecutarQuery($cadenaSQL);
     }
@@ -191,12 +150,8 @@ class ListaChequeo
         $cadenaSQL = "UPDATE documentos SET
                     institucion_educativa_id = '$this->institucion_educativa_id',
                     convenio = '$this->convenio',
-                    objetivo_convenio = '$this->objetivo_convenio',
-                    vigencia_convenio = '$this->vigencia_convenio',
-                    deberes = '$this->deberes',
                     poliza_responsabilidad = '$this->poliza_responsabilidad',
                     poliza_riesgo_biologico = '$this->poliza_riesgo_biologico',
-                    formas_compensacion = '$this->formas_compensacion',
                     anexo_tecnico = '$this->anexo_tecnico',
                     cronograma = '$this->cronograma',
                     esquema_vacunacion = '$this->esquema_vacunacion',
@@ -218,7 +173,7 @@ class ListaChequeo
         else $filtro = " WHERE $filtro";
         if ($orden == null || $orden == '') $orden = '';
         else $orden = " ORDER BY $orden";
-        $cadenaSQL = "SELECT id, institucion_educativa_id, convenio, objetivo_convenio, vigencia_convenio, deberes, poliza_responsabilidad, poliza_riesgo_biologico, formas_compensacion, anexo_tecnico, cronograma, esquema_vacunacion, ssst, arl, fecha_subida FROM documentos $filtro $orden";
+        $cadenaSQL = "SELECT id, institucion_educativa_id, convenio, poliza_responsabilidad, poliza_riesgo_biologico, anexo_tecnico, cronograma, esquema_vacunacion, ssst, arl, fecha_subida FROM documentos $filtro $orden";
         return ConectorBD::ejecutarQuery($cadenaSQL);
     }
     

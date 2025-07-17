@@ -60,8 +60,76 @@ $roles = Rol::getListaEnObjetos("id={$USUARIO->getRolId()}", null)[0];
                 </ul>
             </li>
     </nav>
+    <!-- Agrega esto después del header y antes del main -->
+<div class="as-journal-banner">
+    <div class="as-banner-content">
+        <span>Explora nuestra producción científica:</span>
+        <a href="https://revistacientifica.rf.gd/?i=1" target="_blank" class="as-banner-btn">
+            Visitar Revista Científica <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
 
-
+<style>
+    .as-journal-banner {
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        color: white;
+        padding: 12px 0;
+        text-align: center;
+    }
+    
+    .as-banner-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .as-banner-btn {
+        background: white;
+        color: #2c3e50;
+        padding: 8px 20px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .as-banner-btn i {
+        margin-left: 8px;
+    }
+    
+    .as-banner-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .as-floating-docs {
+        position: fixed;
+        bottom: 80px;
+        right: 30px;
+        background: #27ae60;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        text-decoration: none;
+        font-weight: 600;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    
+    .as-floating-docs:hover {
+        background: #219653;
+        transform: translateY(-3px);
+    }
+</style>
     <main class="as-layout">
         <?php include $_REQUEST['CONTENIDO']; ?>
     </main>
@@ -72,6 +140,8 @@ $roles = Rol::getListaEnObjetos("id={$USUARIO->getRolId()}", null)[0];
     ?>
 
     <script src="layout/js/main.js"></script>
+    
+    
 </body>
 
 </html>

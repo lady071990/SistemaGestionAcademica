@@ -91,6 +91,7 @@ foreach ($listaGruposPorEstudiante as $item) {
     }
     $lista .= "<a class='as-add' href='principal.php?CONTENIDO=layout/components/inasistencias/form-inasistencias-create.php&accion=crear&id={$item->getIdUsuarioEstudiante()}'>" . Generalidades::getTooltip(3, 'Registrar inasistencia') . "</a>";
     $lista .= "<a class='as-add' href='principal.php?CONTENIDO=layout/components/notas/form-notas-create-array.php&accion=crear&id={$item->getIdUsuarioEstudiante()}'>" . Generalidades::getTooltip(4, 'Agregar Calificación') . "</a>";
+    $lista .= "<a class='as-add' href='principal.php?CONTENIDO=layout/components/notas/form-observacion-boletin.php&accion=crear&id={$item->getIdUsuarioEstudiante()}'>" . Generalidades::getTooltip(5, 'Agregar Observación') . "</a>";
     $lista .= "</td>";
     $lista .= "</tr>";
     $count++;

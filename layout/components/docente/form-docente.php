@@ -28,7 +28,7 @@ if (isset($_REQUEST['id'])) {
 </div>
 
 <div class="as-form-content">
-    <form name="formulario" method="post" action="principal.php?CONTENIDO=layout/components/docente/form-docente-action.php" autocomplete="off">
+    <form name="formulario" method="post" action="principal.php?CONTENIDO=layout/components/docente/form-docente-action.php" autocomplete="off" enctype="multipart/form-data">
         <div class="as-form-margin">
             <h2>Docentes</h2>
             <div class="as-form-fields">
@@ -61,6 +61,72 @@ if (isset($_REQUEST['id'])) {
                     <label class="hide-label" for="direccion">Dirección</label>
                     <input type="text" name="direccion" id="direccion" value="<?= $array->getDireccion() ?>" required placeholder="Dirección">
                 </div>
+                
+                <div class="as-form-input"> 
+                    <label for="form_name">Hoja de Vida</label>
+                    <input name="hojaVida" type="file" id="hojaVida" class="form-control" required="required">
+                </div>
+                
+                <div class="as-form-input"> 
+                    <label for="form_name">Documentos</label>
+                    <input name="documentos" type="file" id="documentos" class="form-control" required="required">
+                </div>
+                
+                <div class="as-form-input">
+                    <label for="tipo_vinculacion">Tipo de Vinculación</label>
+                    <select name="tipo_vinculacion" id="tipo_vinculacion" class="form-control" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Tiempo Completo" <?= $array->getTipoVinculacion() == 'Tiempo Completo' ? 'selected' : '' ?>>Tiempo Completo</option>
+                        <option value="Medio Tiempo" <?= $array->getTipoVinculacion() == 'Medio Tiempo' ? 'selected' : '' ?>>Medio Tiempo</option>
+                        <option value="Nomina" <?= $array->getTipoVinculacion() == 'Nomina' ? 'selected' : '' ?>>Nomina</option>
+                        <option value="Prestacion de Servicios" <?= $array->getTipoVinculacion() == 'Prestación de Servicios' ? 'selected' : '' ?>>Prestación de Servicios</option>
+                        <option value="Nombramiento Temporal" <?= $array->getTipoVinculacion() == 'Nombramiento Temporal' ? 'selected' : '' ?>>Nombramiento Temporal</option>
+                        <option value="Libre Nombramiento y Remoción" <?= $array->getTipoVinculacion() == 'Libre Nombramiento y remoción' ? 'selected' : '' ?>>Libre Nombramiento y Remoción</option>
+                    </select>
+                </div>
+
+                <div class="as-form-input">
+                    <label for="experiencia_laboral">Experiencia Laboral Relacionada</label>
+                    <select name="experiencia_laboral" id="experiencia_laboral" class="form-control" required>
+                        <option value="">Seleccione años de experiencia</option>
+                        <?php
+                        for ($i = 1; $i <= 50; $i++) {
+                            $selected = $array->getExperienciaLaboral() == $i ? 'selected' : '';
+                            echo "<option value='$i' $selected>$i año" . ($i > 1 ? 's' : '') . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="as-form-input">
+                    <label>Certificación de Postgrado en Docencia</label>
+                    <div>
+                        <input type="radio" name="certificacion_postgrado" id="certificacion_si" value="1" <?= $array->getCertificacionPostgrado() ? 'checked' : '' ?>>
+                        <label for="certificacion_si" style="display: inline; margin-right: 15px;">Sí</label>
+
+                        <input type="radio" name="certificacion_postgrado" id="certificacion_no" value="0" <?= !$array->getCertificacionPostgrado() ? 'checked' : '' ?>>
+                        <label for="certificacion_no" style="display: inline;">No</label>
+                    </div>
+                </div>
+
+                <div class="as-form-input" id="fecha_certificacion_container" style="<?= !$array->getCertificacionPostgrado() ? 'display: none;' : '' ?>">
+                    <label for="fecha_certificacion">Fecha de Certificación</label>
+                    <input type="date" name="fecha_certificacion" id="fecha_certificacion" value="<?= $array->getFechaCertificacion() ?>" class="form-control">
+                </div>
+
+                <div class="as-form-input">
+                    <label for="perfil_profesional">Perfil Profesional</label>
+                    <textarea name="perfil_profesional" id="perfil_profesional" class="form-control" rows="3"><?= $array->getPerfilProfesional() ?></textarea>
+                </div>
+
+                <script>
+                document.querySelectorAll('input[name="certificacion_postgrado"]').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        document.getElementById('fecha_certificacion_container').style.display = 
+                            this.value === '1' ? 'block' : 'none';
+                    });
+                });
+                </script>
                 
                 <?php
                 if ($titulo == 'Modificar') {

@@ -86,12 +86,27 @@
         .print-button button {
             padding: 10px 20px;
         }
+        .aprobado-reprobado {
+            font-size: 16px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        .firma-coordinador {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        
     </style>
 </head>
    <?php
     @session_start();
     if (!isset($_SESSION['usuario'])) header('location:../../index.php?mensaje=Acceso no autorizado');
 
+    
+    
     $lista = '';
     $count = 1;
     $posision = 0;
@@ -133,6 +148,7 @@
                             </tr>
                         </thead>
                         <tbody>';
+            
 
             $listaAsignaturas = NotasConsulta::getListaEnObjetos('GROUP BY n.id_periodo_academico, u.identificacion, n.id_asignatura', true);
 
@@ -173,8 +189,30 @@
                                </tr>';
                 }
             }
-
+                       
             $lista .= '</tbody></table>
+                 <div style="margin-top: 30px;">
+            <p><strong>Observaciones:</strong></p>
+            <div style="border: 1px solid #000; height: 80px; padding: 10px;"></div>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; justify-content: space-between; width: 100%;">
+            <div>
+                <strong>Resultado:</strong><br>
+                <div class="aprobado-reprobado">
+                    <span>' . ($promedio >= 3.0 ? '☑' : '☐') . ' APROBADO</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span>' . ($promedio < 3.0 ? '☑' : '☐') . ' REPROBADO</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="firma-coordinador">
+            <p>__________________________</p>
+            <p>Martin Caicedo</p>
+            <p><small>Coordinación Docencia e Investigación</small></p>
+        </div>
+
+
                 </div>';  // cierre de boletin-container
         }
     }
