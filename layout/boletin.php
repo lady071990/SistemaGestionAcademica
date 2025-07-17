@@ -1,5 +1,4 @@
 <?php
-
 ?>
 <!doctype html>
 <html>
@@ -117,105 +116,111 @@
     
     if (isset($_REQUEST['identificacion'])) {
     $listaNotas = NotasConsulta::getListaEnObjetos("WHERE u.identificacion = {$_REQUEST['identificacion']} GROUP BY n.id_periodo_academico, u.identificacion", false);
-        
-        foreach ($listaNotas as $key) {
-            $lista .= '<div class="boletin-container">
-                <div class="header">
-                    <img class="logo" src="layout/img/FORMATO.png" alt="Logo">
-                    <h2>FORMATO DE EVALUACIÓN INTERNADO ROTATORIO</h2>
-                    <p>' . htmlspecialchars($key->getNombreInstitucion()) . '</p>
+
+    foreach ($listaNotas as $key) {
+        $lista .= '<div class="boletin-container">
+            <div class="header">
+                <img class="logo" src="layout/img/FORMATO.png" alt="Logo">
+                <h2>FORMATO DE EVALUACIÓN INTERNADO ROTATORIO</h2>
+                <p>' . htmlspecialchars($key->getNombreInstitucion()) . '</p>
+            </div>
+
+            <div class="student-info">
+                <div>
+                    <p><strong>Identificación:</strong> ' . htmlspecialchars($key->getIdentificacionEstudiante()) . '</p>
+                    <p><strong>Nombre:</strong> ' . htmlspecialchars($key->getNombreEstudiante()) . '</p>
+                    <p><strong>Grado:</strong> ' . htmlspecialchars($key->getNombreGrado() . ' ' . $key->getNombreGrupo()) . '</p>
+                    <p><strong>Programa Académico:</strong> ' . htmlspecialchars($key->getProgramaAcademico()) . '</p>
+                    <p><strong>Periodo Académico:</strong> ' . htmlspecialchars($key->getPeriodoAcademico()) . '</p>
                 </div>
+                <img class="student-photo" src="./documentos/fotos/' . htmlspecialchars($key->getFoto()) . '" alt="Foto del estudiante">
+            </div>';
 
-                <div class="student-info">
-                    <div>
-                        <p><strong>Identificación:</strong> ' . htmlspecialchars($key->getIdentificacionEstudiante()) . '</p>
-                        <p><strong>Nombre:</strong> ' . htmlspecialchars($key->getNombreEstudiante()) . '</p>
-                        <p><strong>Grado:</strong> ' . htmlspecialchars($key->getNombreGrado() . ' ' . $key->getNombreGrupo()) . '</p>
-                        <p><strong>Programa Académico:</strong> ' . htmlspecialchars($key->getProgramaAcademico()) . '</p>
-                        <p><strong>Periodo Académico:</strong> ' . htmlspecialchars($key->getPeriodoAcademico()) . '</p>
-                    </div>
-                    <img class="student-photo" src="./documentos/fotos/' . htmlspecialchars($key->getFoto()) . '" alt="Foto del estudiante">
-                </div>';
+        $lista .= '<table class="info-table">
+                    <thead>
+                        <tr>
+                            <th>Area de Rotación</th>
+                            <th>Competencia</th>
+                            <th>Nota Acumulada</th>
+                            <th>Inasistencias</th>
+                            <th>Promedio</th>
+                            <th>Responsable de Calificación</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
 
-            $lista .= '<table class="info-table">
-                        <thead>
-                            <tr>
-                                <th>Area de Rotacion</th>
-                                <th>Competencia</th>
-                                <th>Nota Acomulada</th>
-                                <th>Inasistencias</th>
-                                <th>Promedio</th>
-                            </tr>
-                        </thead>
-                        <tbody>';
-            
+        $listaAsignaturas = NotasConsulta::getListaEnObjetos('GROUP BY n.id_periodo_academico, u.identificacion, n.id_asignatura', true);
 
-            $listaAsignaturas = NotasConsulta::getListaEnObjetos('GROUP BY n.id_periodo_academico, u.identificacion, n.id_asignatura', true);
+        foreach ($listaAsignaturas as $asignatura) {
+            if ($asignatura->getIdPeriodoAcademico() == $key->getIdPeriodoAcademico() && $key->getIdUsuarioEstudiante() == $asignatura->getIdUsuarioEstudiante()) {
 
-            foreach ($listaAsignaturas as $asignatura) {
-                if ($asignatura->getIdPeriodoAcademico() == $key->getIdPeriodoAcademico() && $key->getIdUsuarioEstudiante() == $asignatura->getIdUsuarioEstudiante()) {
-
-                    $listaInasistencias = Inasistencias::getListaEnObjetos("i.id_asignatura = {$asignatura->getIdAsignatura()} AND i.registrado_a_estudiante = {$key->getIdUsuarioEstudiante()}", null, 'suma');
-                    $cantidadInasistencias = '0';
-                    foreach ($listaInasistencias as $inasistencia) {
-                        $cantidadInasistencias = $inasistencia->getCantidad() ? $inasistencia->getCantidad() : '0';
-                    }
-
-                    $listaNotasAsignadas = NotasConsulta::getListaEnObjetos("", false);
-                    $cantidadNotas = 0;
-                    $sumaNotas = 0;
-                    $detallesActividades = '';
-
-                    foreach ($listaNotasAsignadas as $item) {
-                        $posision++;
-                        if (
-                            $asignatura->getIdPeriodoAcademico() == $key->getIdPeriodoAcademico() &&
-                            $asignatura->getIdentificacionEstudiante() == $item->getIdentificacionEstudiante() &&
-                            $asignatura->getIdAsignatura() == $item->getIdAsignatura()
-                            ){
-                            $detallesActividades .= $item->getNombreTipoActividad() . ': ' . $item->getNota() . '<br>';
-                            $cantidadNotas++;
-                            $sumaNotas += $item->getNota();
-                        }
-                    }
-                    $promedio = ($cantidadNotas > 0) ? number_format($sumaNotas / $cantidadNotas, 2) : '-';
-
-                    $lista .= '<tr>
-                                <td>' . htmlspecialchars($asignatura->getNombreAsignatura()) . '</td>
-                                <td>' . $detallesActividades . '</td>
-                                <td>' . ($cantidadNotas > 0 ? number_format($sumaNotas, 2) : '-') . '</td>
-                                <td>' . $cantidadInasistencias . '</td>
-                                <td>' . $promedio . '</td>
-                               </tr>';
+                $listaInasistencias = Inasistencias::getListaEnObjetos("i.id_asignatura = {$asignatura->getIdAsignatura()} AND i.registrado_a_estudiante = {$key->getIdUsuarioEstudiante()}", null, 'suma');
+                $cantidadInasistencias = '0';
+                foreach ($listaInasistencias as $inasistencia) {
+                    $cantidadInasistencias = $inasistencia->getCantidad() ?: '0';
                 }
-            }
-                       
-            $lista .= '</tbody></table>
-                 <div style="margin-top: 30px;">
-            <p><strong>Observaciones:</strong></p>
-            <div style="border: 1px solid #000; height: 80px; padding: 10px;"></div>
-        </div>
 
-        <div style="margin-top: 20px; display: flex; justify-content: space-between; width: 100%;">
-            <div>
-                <strong>Resultado:</strong><br>
-                <div class="aprobado-reprobado">
-                    <span>' . ($promedio >= 3.0 ? '☑' : '☐') . ' APROBADO</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span>' . ($promedio < 3.0 ? '☑' : '☐') . ' REPROBADO</span>
+                $listaNotasAsignadas = NotasConsulta::getListaEnObjetos("", false);
+                $cantidadNotas = 0;
+                $sumaNotas = 0;
+                $detallesActividades = '';
+
+                foreach ($listaNotasAsignadas as $item) {
+                    if (
+                        $asignatura->getIdPeriodoAcademico() == $key->getIdPeriodoAcademico() &&
+                        $asignatura->getIdentificacionEstudiante() == $item->getIdentificacionEstudiante() &&
+                        $asignatura->getIdAsignatura() == $item->getIdAsignatura()
+                    ) {
+                        $detallesActividades .= $item->getNombreTipoActividad() . ': ' . $item->getNota() . '<br>';
+                        $cantidadNotas++;
+                        $sumaNotas += $item->getNota();
+                    }
+                }
+                $promedio = ($cantidadNotas > 0) ? number_format($sumaNotas / $cantidadNotas, 2) : '-';
+
+                // Obtener nombre del docente responsable
+                $asignaciones = AsignacionDocente::getListaEnObjetos("ad.id_asignatura = {$asignatura->getIdAsignatura()}", null);
+                $docenteResponsable = 'No asignado';
+                if (!empty($asignaciones)) {
+                    $docente = $asignaciones[0]->getNombreDocente();
+                    $docenteResponsable = $docente->getNombres() . ' ' . $docente->getApellidos();
+                }
+
+                $lista .= '<tr>
+                            <td>' . htmlspecialchars($asignatura->getNombreAsignatura()) . '</td>
+                            <td>' . $detallesActividades . '</td>
+                            <td>' . ($cantidadNotas > 0 ? number_format($sumaNotas, 2) : '-') . '</td>
+                            <td>' . $cantidadInasistencias . '</td>
+                            <td>' . $promedio . '</td>
+                            <td>' . htmlspecialchars($docenteResponsable) . '</td>
+                        </tr>';
+            }
+        }
+
+        $lista .= '</tbody></table>
+            <div style="margin-top: 30px;">
+                <p><strong>Observaciones:</strong></p>
+                <div style="border: 1px solid #000; height: 80px; padding: 10px;"></div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; justify-content: space-between; width: 100%;">
+                <div>
+                    <strong>Resultado:</strong><br>
+                    <div class="aprobado-reprobado">
+                        <span>' . ($promedio >= 3.0 ? '☑' : '☐') . ' APROBADO</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span>' . ($promedio < 3.0 ? '☑' : '☐') . ' REPROBADO</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="firma-coordinador">
-            <p>__________________________</p>
-            <p>Martin Caicedo</p>
-            <p><small>Coordinación Docencia e Investigación</small></p>
-        </div>
 
-
-                </div>';  // cierre de boletin-container
-        }
+            <div class="firma-coordinador">
+                <p>__________________________</p>
+                <p>Martin Caicedo</p>
+                <p><small>Coordinación Docencia e Investigación</small></p>
+            </div>
+        </div>';
     }
+}
     ?>
 
     <div class="print-button">

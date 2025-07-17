@@ -6,7 +6,6 @@ if (!isset($_SESSION['usuario'])) header('location:../../../index.php?mensaje=Ac
 require_once 'logica/clases/ObservacionBoletin.php';
 require_once 'logica/clasesGenericas/ConectorBD.php';
 
-
 // PRIMERO obtener las variables de la URL
 $idUsuario = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
 $accion = isset($_REQUEST['accion']) ? $_REQUEST['accion'] : null;
